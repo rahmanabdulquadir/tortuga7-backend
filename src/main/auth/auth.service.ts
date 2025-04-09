@@ -4,11 +4,13 @@ import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 import { UsersService } from '../user/user.service';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
+    private mailService: MailService,
     private jwtService: JwtService,
     private prisma: PrismaService
   ) {}
@@ -32,20 +34,21 @@ export class AuthService {
 
   async forgotPassword(email: string) {
     const user = await this.prisma.user.findUnique({ where: { email } });
+
     if (!user) throw new NotFoundException('User not found');
 
     const resetToken = crypto.randomBytes(32).toString('hex');
-    const resetTokenExp = new Date(Date.now() + 1000 * 60 * 10); // valid for 10 min
+    const resetTokenExp = new Date(Date.now() + 1000 * 60 * 10); // 10 minutes from now
 
     await this.prisma.user.update({
       where: { email },
       data: { resetToken, resetTokenExp },
     });
 
-    // Normally you'd send this via email
-    console.log(`📨 Password reset token for ${email}: ${resetToken}`);
+    // ✅ Use MailService to send the reset email
+    await this.mailService.sendResetPasswordEmail(email, resetToken);
 
-    return { message: 'Reset token generated and sent to email (check server log).' };
+    return { message: 'Reset link sent to your email.' };
   }
 
   async resetPassword(token: string, newPassword: string) {
