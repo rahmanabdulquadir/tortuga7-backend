@@ -51,18 +51,22 @@ export class AuthService {
     return { message: 'Reset link sent to your email.' };
   }
 
-  async resetPassword(token: string, newPassword: string) {
+  async resetPassword(resetToken: string, newPassword: string) {
     const user = await this.prisma.user.findFirst({
       where: {
-        resetToken: token,
-        resetTokenExp: { gte: new Date() }, // not expired
+        resetToken,
+        resetTokenExp: {
+          gte: new Date(), // Ensure token hasn't expired
+        },
       },
     });
-
-    if (!user) throw new BadRequestException('Invalid or expired token');
-
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-
+  
+    if (!user) {
+      throw new NotFoundException('Invalid or expired reset token');
+    }
+  
+    const hashedPassword = await bcrypt.hash(newPassword, 12);
+  
     await this.prisma.user.update({
       where: { id: user.id },
       data: {
@@ -71,7 +75,7 @@ export class AuthService {
         resetTokenExp: null,
       },
     });
-
-    return { message: 'Password reset successful' };
+  
+    return { message: 'Password reset successfully' };
   }
 }

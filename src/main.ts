@@ -18,5 +18,6 @@ async function bootstrap() {
   ConfigModule.forRoot({
     isGlobal: true,
   });
+  
 }
 bootstrap();
