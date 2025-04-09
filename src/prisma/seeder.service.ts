@@ -16,7 +16,7 @@ export class SeederService implements OnModuleInit {
     });
 
     if (existingAdmin) {
-      console.log('✅ Admin already exists.');
+      console.log('Admin already exists.');
       return;
     }
 
@@ -30,6 +30,6 @@ export class SeederService implements OnModuleInit {
       },
     });
 
-    console.log('🎉 Admin user created on startup.');
+    console.log('Admin user created on startup.');
   }
 }

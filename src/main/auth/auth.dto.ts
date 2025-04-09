@@ -15,3 +15,16 @@ export class LoginDto {
   @ApiProperty({ example: 'strongPassword123' })
   password: string;
 }
+
+export class ForgotPasswordDto {
+  @ApiProperty()
+  email: string;
+}
+
+export class ResetPasswordDto {
+  @ApiProperty()
+  token: string;
+
+  @ApiProperty()
+  newPassword: string;
+}
