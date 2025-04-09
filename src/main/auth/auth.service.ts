@@ -34,10 +34,12 @@ export class AuthService {
 
   async forgotPassword(email: string) {
     const user = await this.prisma.user.findUnique({ where: { email } });
+    // console.log(user)
 
     if (!user) throw new NotFoundException('User not found');
 
     const resetToken = crypto.randomBytes(32).toString('hex');
+    // console.log(`📨 Password reset token for ${email}: ${resetToken}`);
     const resetTokenExp = new Date(Date.now() + 1000 * 60 * 10); // 10 minutes from now
 
     await this.prisma.user.update({
@@ -45,8 +47,8 @@ export class AuthService {
       data: { resetToken, resetTokenExp },
     });
 
-    // ✅ Use MailService to send the reset email
     await this.mailService.sendResetPasswordEmail(email, resetToken);
+    
 
     return { message: 'Reset link sent to your email.' };
   }
