@@ -10,6 +10,7 @@ export class SeederService implements OnModuleInit {
   async onModuleInit() {
     const adminEmail = 'admin@tortuga.com';
     const adminPassword = 'admin123';
+    const adminName = "Admin"
 
     const existingAdmin = await this.prisma.user.findFirst({
       where: { role: 'ADMIN' },
@@ -26,6 +27,7 @@ export class SeederService implements OnModuleInit {
       data: {
         email: adminEmail,
         password: hashedPassword,
+        name: adminName,
         role: 'ADMIN',
       },
     });

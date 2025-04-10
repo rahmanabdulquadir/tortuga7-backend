@@ -15,9 +15,9 @@ export class AuthService {
     private prisma: PrismaService
   ) {}
 
-  async signup(email: string, password: string) {
+  async signup(email: string, password: string, name: string) {
     const hashedPassword = await bcrypt.hash(password, 10);
-    return this.usersService.createUser(email, hashedPassword);
+    return this.usersService.createUser(email, hashedPassword, name);
   }
 
   async signin(email: string, password: string) {
