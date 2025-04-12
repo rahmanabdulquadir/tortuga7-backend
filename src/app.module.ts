@@ -8,9 +8,10 @@ import { SeederService } from './prisma/seeder.service';
 import { MailModule } from './main/mail/mail.module';
 import { ProductModule } from './main/product/product.module';
 import { ServiceModule } from './main/service/service.module';
+import { BlogModule } from './main/blog/blog.module';
 
 @Module({
-  imports: [AuthModule, UsersModule, PrismaModule, MailModule, ProductModule, ServiceModule],
+  imports: [AuthModule, UsersModule, PrismaModule, MailModule, ProductModule, ServiceModule, BlogModule],
   controllers: [AppController],
   providers: [AppService, SeederService],
 })
