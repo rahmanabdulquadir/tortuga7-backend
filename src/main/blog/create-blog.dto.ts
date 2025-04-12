@@ -15,9 +15,9 @@ export class CreateBlogDto {
   @IsString()
   image?: string;
 
-  @ApiProperty()
-  @IsString()
-  author: string;
+//   @ApiProperty()
+//   @IsString()
+//   author: string;
 
   @ApiProperty()
   @IsString()
