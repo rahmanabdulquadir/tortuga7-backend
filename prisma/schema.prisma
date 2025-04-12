@@ -38,6 +38,30 @@ model Profile {
   userId    String  @unique
 }
 
+
+model Service {
+  id          String    @id @default(uuid())
+  name        String
+  description String?
+  price       Float
+  duration    Int? // in minutes
+  products    Product[]  // 👈 One-to-many relation
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Product {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  price       Float
+  image       String?
+  service     Service  @relation(fields: [serviceId], references: [id])
+  serviceId   String   // 👈 Foreign key
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 model Consultation {
   id          String   @id @default(uuid())
   topic       String
