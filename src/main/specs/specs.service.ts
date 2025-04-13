@@ -11,7 +11,16 @@ export class SpecsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(dto: CreateSpecsDto) {
-    return this.prisma.specs.create({ data: dto });
+    const { productId, ...specsData } = dto;
+  
+    return this.prisma.specs.create({
+      data: {
+        ...specsData,
+        product: {
+          connect: { id: productId },
+        },
+      },
+    });
   }
 
   async findAll() {

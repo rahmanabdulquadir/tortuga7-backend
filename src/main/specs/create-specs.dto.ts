@@ -1,78 +1,96 @@
-// src/modules/specs/dto/create-specs.dto.ts
-
+// src/specs/dto/create-specs.dto.ts
 import { IsOptional, IsString } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateSpecsDto {
   @ApiPropertyOptional()
-  @IsString() @IsOptional()
+  @IsOptional()
+  @IsString()
   productSKUs?: string;
 
   @ApiPropertyOptional()
-  @IsString() @IsOptional()
+  @IsOptional()
+  @IsString()
+  productId?: string;
+
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
   motherboard?: string;
 
   @ApiPropertyOptional()
-  @IsString() @IsOptional()
+  @IsOptional()
+  @IsString()
   processor?: string;
 
   @ApiPropertyOptional()
-  @IsString() @IsOptional()
+  @IsOptional()
+  @IsString()
   systemMemory?: string;
 
   @ApiPropertyOptional()
-  @IsString() @IsOptional()
+  @IsOptional()
+  @IsString()
   onBoardDevices?: string;
 
   @ApiPropertyOptional()
-  @IsString() @IsOptional()
+  @IsOptional()
+  @IsString()
   inputOutput?: string;
 
   @ApiPropertyOptional()
-  @IsString() @IsOptional()
+  @IsOptional()
+  @IsString()
   systemBIOS?: string;
 
   @ApiPropertyOptional()
-  @IsString() @IsOptional()
+  @IsOptional()
+  @IsString()
   management?: string;
 
   @ApiPropertyOptional()
-  @IsString() @IsOptional()
+  @IsOptional()
+  @IsString()
   security?: string;
 
   @ApiPropertyOptional()
-  @IsString() @IsOptional()
+  @IsOptional()
+  @IsString()
   pcHealthMonitoring?: string;
 
   @ApiPropertyOptional()
-  @IsString() @IsOptional()
+  @IsOptional()
+  @IsString()
   chassis?: string;
 
   @ApiPropertyOptional()
-  @IsString() @IsOptional()
+  @IsOptional()
+  @IsString()
   dimensionsAndWeight?: string;
 
   @ApiPropertyOptional()
-  @IsString() @IsOptional()
+  @IsOptional()
+  @IsString()
   expansionSlots?: string;
 
   @ApiPropertyOptional()
-  @IsString() @IsOptional()
+  @IsOptional()
+  @IsString()
   driveBaysStorage?: string;
 
   @ApiPropertyOptional()
-  @IsString() @IsOptional()
+  @IsOptional()
+  @IsString()
   systemCooling?: string;
 
   @ApiPropertyOptional()
-  @IsString() @IsOptional()
+  @IsOptional()
+  @IsString()
   powerSupply?: string;
 
   @ApiPropertyOptional()
-  @IsString() @IsOptional()
-  operatingEnvironment?: string;
-
-  @ApiPropertyOptional({ description: 'Product ID to link with this specs' })
+  @IsOptional()
   @IsString()
-  productId: string;
+  operatingEnvironment?: string;
 }

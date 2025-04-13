@@ -8,8 +8,16 @@ export class ProductService {
   constructor(private prisma: PrismaService) {}
 
   async create(dto: CreateProductDto) {
+    const { specs, ...productData } = dto;
+  
     return this.prisma.product.create({
-      data: dto,
+      data: {
+        ...productData,
+        specs: specs ? { create: specs } : undefined,
+      },
+      include: {
+        specs: true, // optional: includes specs in response
+      },
     });
   }
 
@@ -26,9 +34,21 @@ export class ProductService {
   }
 
   async update(id: string, dto: UpdateProductDto) {
+    const { specs, ...productData } = dto;
+  
     return this.prisma.product.update({
       where: { id },
-      data: dto,
+      data: {
+        ...productData,
+        specs: specs
+          ? {
+              update: specs,
+            }
+          : undefined,
+      },
+      include: {
+        specs: true, // optional: return updated specs
+      },
     });
   }
 

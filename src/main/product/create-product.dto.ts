@@ -1,12 +1,16 @@
-import { IsString, IsNumber, IsOptional } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+// src/product/dto/create-product.dto.ts
+import { IsString, IsNumber, IsOptional, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { CreateSpecsDto } from '../specs/create-specs.dto';
+
 
 export class CreateProductDto {
   @ApiProperty({ example: 'Tire Wash' })
   @IsString()
   name: string;
 
-  @ApiProperty({ example: 'Detailed cleaning of all tires', required: false })
+  @ApiPropertyOptional({ example: 'Detailed cleaning of all tires' })
   @IsOptional()
   @IsString()
   description?: string;
@@ -15,10 +19,7 @@ export class CreateProductDto {
   @IsNumber()
   price: number;
 
-  @ApiProperty({
-    example: 'https://example.com/image.jpg',
-    required: false,
-  })
+  @ApiPropertyOptional({ example: 'https://example.com/image.jpg' })
   @IsOptional()
   @IsString()
   image?: string;
@@ -26,4 +27,15 @@ export class CreateProductDto {
   @ApiProperty({ example: 'service-id-here' })
   @IsString()
   serviceId: string;
+
+  @ApiPropertyOptional({ example: 'partner-id-here' })
+  @IsOptional()
+  @IsString()
+  partnerId?: string;
+
+  @ApiPropertyOptional({ type: () => CreateSpecsDto })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => CreateSpecsDto)
+  specs?: CreateSpecsDto;
 }
