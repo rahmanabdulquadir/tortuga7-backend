@@ -10,9 +10,20 @@ import { ProductModule } from './main/product/product.module';
 import { ServiceModule } from './main/service/service.module';
 import { BlogModule } from './main/blog/blog.module';
 import { ContactModule } from './main/contact/contact.module';
+import { PartnerModule } from './main/partner/partner.module';
 
 @Module({
-  imports: [AuthModule, UsersModule, PrismaModule, MailModule, ProductModule, ServiceModule, BlogModule, ContactModule],
+  imports: [
+    AuthModule,
+    UsersModule, 
+    PrismaModule, 
+    MailModule, 
+    ProductModule, 
+    ServiceModule, 
+    BlogModule, 
+    ContactModule, 
+    PartnerModule
+  ],
   controllers: [AppController],
   providers: [AppService, SeederService],
 })
