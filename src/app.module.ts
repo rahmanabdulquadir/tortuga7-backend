@@ -11,6 +11,7 @@ import { ServiceModule } from './main/service/service.module';
 import { BlogModule } from './main/blog/blog.module';
 import { ContactModule } from './main/contact/contact.module';
 import { PartnerModule } from './main/partner/partner.module';
+import { SpecsModule } from './main/specs/specs.module';
 
 @Module({
   imports: [
@@ -22,7 +23,8 @@ import { PartnerModule } from './main/partner/partner.module';
     ServiceModule, 
     BlogModule, 
     ContactModule, 
-    PartnerModule
+    PartnerModule, 
+    SpecsModule
   ],
   controllers: [AppController],
   providers: [AppService, SeederService],

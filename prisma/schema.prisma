@@ -55,12 +55,46 @@ model Product {
   price       Float
   image       String?
   service     Service  @relation(fields: [serviceId], references: [id])
-  serviceId   String   // 👈 Foreign key
-  partner     Partner?  @relation(fields: [partnerId], references: [id])
+  serviceId   String
+
+  partner     Partner? @relation(fields: [partnerId], references: [id])
   partnerId   String?
+
+  specs       Specs?   @relation("ProductSpecs") // ✅ Back-reference to Specs
+
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
+model Specs {
+  id                      String   @id @default(uuid())
+
+  product                 Product  @relation("ProductSpecs", fields: [productId], references: [id])
+  productId               String   @unique 
+
+  productSKUs             String?
+  motherboard             String?
+  processor               String?
+  systemMemory            String?
+  onBoardDevices          String?
+  inputOutput             String?
+  systemBIOS              String?
+  management              String?
+  security                String?
+  pcHealthMonitoring      String?
+  chassis                 String?
+  dimensionsAndWeight     String?
+  expansionSlots          String?
+  driveBaysStorage        String?
+  systemCooling           String?
+  powerSupply             String?
+  operatingEnvironment    String?
+
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+}
+
+
 
 model Consultation {
   id          String   @id @default(uuid())
