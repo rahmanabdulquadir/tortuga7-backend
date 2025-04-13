@@ -13,6 +13,7 @@ import { ContactModule } from './main/contact/contact.module';
 import { PartnerModule } from './main/partner/partner.module';
 import { SpecsModule } from './main/specs/specs.module';
 
+
 @Module({
   imports: [
     AuthModule,
@@ -24,7 +25,7 @@ import { SpecsModule } from './main/specs/specs.module';
     BlogModule, 
     ContactModule, 
     PartnerModule, 
-    SpecsModule
+    SpecsModule,
   ],
   controllers: [AppController],
   providers: [AppService, SeederService],
