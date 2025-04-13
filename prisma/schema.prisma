@@ -90,6 +90,15 @@ model Blog {
   updatedAt   DateTime @updatedAt
 }
 
+model Contact {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  message   String
+  createdAt DateTime @default(now())
+}
+
+
 enum Role {
   ADMIN
   CLIENT
