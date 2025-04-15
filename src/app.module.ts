@@ -12,7 +12,9 @@ import { BlogModule } from './main/blog/blog.module';
 import { ContactModule } from './main/contact/contact.module';
 import { PartnerModule } from './main/partner/partner.module';
 import { SpecsModule } from './main/specs/specs.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
+import { JwtStrategy } from './main/auth/jwt.strategy';
 
 
 @Module({
@@ -30,9 +32,17 @@ import { ConfigModule } from '@nestjs/config';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (config: ConfigService) => ({
+        secret: config.getOrThrow('JWT_SECRET'),
+        signOptions: { expiresIn: config.getOrThrow('JWT_EXPIRES_IN') },
+      }),
+      inject: [ConfigService],
+    }),
   ],
   controllers: [AppController],
-  providers: [AppService, SeederService],
+  providers: [AppService, SeederService, JwtStrategy],
 })
 export class AppModule {}
 
