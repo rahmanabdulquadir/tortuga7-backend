@@ -12,6 +12,7 @@ import { BlogModule } from './main/blog/blog.module';
 import { ContactModule } from './main/contact/contact.module';
 import { PartnerModule } from './main/partner/partner.module';
 import { SpecsModule } from './main/specs/specs.module';
+import { ConfigModule } from '@nestjs/config';
 
 
 @Module({
@@ -26,6 +27,9 @@ import { SpecsModule } from './main/specs/specs.module';
     ContactModule, 
     PartnerModule, 
     SpecsModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
   ],
   controllers: [AppController],
   providers: [AppService, SeederService],
