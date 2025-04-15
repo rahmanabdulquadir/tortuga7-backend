@@ -6,11 +6,14 @@ import {
     Param,
     Patch,
     Delete,
+    Query,
+    ValidationPipe,
   } from '@nestjs/common';
   import { ProductService } from './product.service';
   import { ApiTags } from '@nestjs/swagger';
 import { CreateProductDto } from './create-product.dto';
 import { UpdateProductDto } from './update-product.dto';
+import { FilterProductDto } from './filter-product.dto';
   
   @ApiTags('Products')
   @Controller('products')
@@ -22,10 +25,17 @@ import { UpdateProductDto } from './update-product.dto';
       return this.productService.create(dto);
     }
   
-    @Get()
-    findAll() {
-      return this.productService.findAll();
-    }
+  //   @Get()
+  // findAll(@Query() query: FilterProductDto) {
+  //   return this.productService.findAll();
+  // }
+
+  @Get()
+  findAll(
+    @Query(new ValidationPipe({ transform: true })) filter?: FilterProductDto,
+  ) {
+    return this.productService.findAll(filter);
+  }
   
     @Get(':id')
     findOne(@Param('id') id: string) {

@@ -2,6 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateProductDto } from './create-product.dto';
 import { UpdateProductDto } from './update-product.dto';
+import { FilterProductDto } from './filter-product.dto';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class ProductService {
@@ -21,11 +23,55 @@ export class ProductService {
     });
   }
 
-  async findAll() {
+  // async findAll() {
+  //   return this.prisma.product.findMany({
+  //     include: { service: true },
+  //   });
+  // }
+
+
+
+  async findAll(filter?: FilterProductDto) {
+    const { search, minPrice, maxPrice, serviceId, partnerId } = filter || {};
+  
+    const conditions: Prisma.ProductWhereInput[] = [];
+  
+    if (search) {
+      conditions.push({
+        OR: [
+          { name: { contains: search, mode: 'insensitive' } },
+          { description: { contains: search, mode: 'insensitive' } },
+        ],
+      });
+    }
+    console.log(typeof minPrice, minPrice);
+    if (minPrice !== undefined) {
+      conditions.push({ price: { gte: minPrice } });
+    }
+  
+    if (maxPrice !== undefined) {
+      conditions.push({ price: { lte: maxPrice } });
+    }
+  
+    if (serviceId) {
+      conditions.push({ serviceId });
+    }
+  
+    if (partnerId) {
+      conditions.push({ partnerId });
+    }
+    // console.log('Filter conditions:', JSON.stringify({ where: { AND: conditions } }, null, 2));
+  
     return this.prisma.product.findMany({
-      include: { service: true },
+      where: conditions.length > 0 ? { AND: conditions } : undefined,
+      include: {
+        service: true,
+      },
     });
+    
   }
+  
+
 
   async findOne(id: string) {
     const product = await this.prisma.product.findUnique({ where: { id } });
