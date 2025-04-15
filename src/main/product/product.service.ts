@@ -60,7 +60,6 @@ export class ProductService {
     if (partnerId) {
       conditions.push({ partnerId });
     }
-    // console.log('Filter conditions:', JSON.stringify({ where: { AND: conditions } }, null, 2));
   
     return this.prisma.product.findMany({
       where: conditions.length > 0 ? { AND: conditions } : undefined,
@@ -68,7 +67,6 @@ export class ProductService {
         service: true,
       },
     });
-    
   }
   
 

@@ -5,7 +5,7 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 export class FilterProductDto {
   @ApiPropertyOptional({
     description: 'Search keyword to match product name or description',
-    example: 'cleaning',
+    // example: 'cleaning',
   })
   @IsOptional()
   @IsString()
@@ -13,7 +13,7 @@ export class FilterProductDto {
 
   @ApiPropertyOptional({
     description: 'Minimum price to filter products',
-    example: 100,
+    // example: 100,
   })
   @IsOptional()
   @Type(() => Number)
@@ -22,7 +22,7 @@ export class FilterProductDto {
 
   @ApiPropertyOptional({
     description: 'Maximum price to filter products',
-    example: 500,
+    // example: 500,
   })
   @IsOptional()
   @Type(() => Number)
@@ -31,7 +31,7 @@ export class FilterProductDto {
 
   @ApiPropertyOptional({
     description: 'Filter products by service ID',
-    example: 'svc_abc123',
+    // example: 'svc_abc123',
   })
   @IsOptional()
   @IsString()
@@ -39,7 +39,7 @@ export class FilterProductDto {
 
   @ApiPropertyOptional({
     description: 'Filter products by partner ID',
-    example: 'partner_xyz789',
+    // example: 'partner_xyz789',
   })
   @IsOptional()
   @IsString()

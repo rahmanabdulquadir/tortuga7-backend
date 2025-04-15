@@ -62,7 +62,7 @@ model Product {
   partnerId   String?
 
    orderItems  OrderProduct[] 
-  specs       Specs?   @relation("ProductSpecs") // ✅ Back-reference to Specs
+  specs       Specs?   @relation("ProductSpecs")
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
