@@ -32,6 +32,7 @@ import { JwtStrategy } from './main/auth/jwt.strategy';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (config: ConfigService) => ({
@@ -40,6 +41,7 @@ import { JwtStrategy } from './main/auth/jwt.strategy';
       }),
       inject: [ConfigService],
     }),
+    
   ],
   controllers: [AppController],
   providers: [AppService, SeederService, JwtStrategy],
