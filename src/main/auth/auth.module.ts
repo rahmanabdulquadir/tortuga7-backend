@@ -14,7 +14,6 @@ import { MailModule } from '../mail/mail.module';
     MailModule,
     PassportModule,
     ConfigModule,
-   
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtService],
