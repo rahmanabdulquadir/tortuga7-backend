@@ -61,7 +61,7 @@ model Product {
   partner     Partner? @relation(fields: [partnerId], references: [id])
   partnerId   String?
 
-   orderItems  OrderProduct[] 
+  orderItems  OrderProduct[] 
   specs       Specs?   @relation("ProductSpecs")
 
   createdAt   DateTime @default(now())
