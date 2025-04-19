@@ -15,5 +15,10 @@ export class CreateContactDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
+  phone: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
   message: string;
 }

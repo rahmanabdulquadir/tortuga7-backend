@@ -194,6 +194,7 @@ model Contact {
   id        String   @id @default(uuid())
   name      String
   email     String
+  Phone     String
   message   String
   createdAt DateTime @default(now())
 }
