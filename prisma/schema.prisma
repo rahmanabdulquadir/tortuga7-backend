@@ -27,7 +27,7 @@ model User {
   resetTokenExp   DateTime?
   consultations Consultation[]
   gpuRentals  GPURental[]
-  orders         Order[]  
+  // orders         Order[]  
 }
 
 model Profile {
@@ -40,61 +40,87 @@ model Profile {
 }
 
 
+// model Service {
+//   id          String    @id @default(uuid())
+//   name        String
+//   description String?
+//   products    Product[]  // 👈 One-to-many relation
+//   createdAt   DateTime @default(now())
+//   updatedAt   DateTime @updatedAt
+// }
+
+// model Product {
+//   id          String   @id @default(uuid())
+//   name        String
+//   description String?
+//   price       Float
+//   image       String?
+//   service     Service  @relation(fields: [serviceId], references: [id])
+//   serviceId   String
+
+//   partner     Partner? @relation(fields: [partnerId], references: [id])
+//   partnerId   String?
+
+//   orderItems  OrderProduct[] 
+//   specs       Specs?   @relation("ProductSpecs")
+
+//   createdAt   DateTime @default(now())
+//   updatedAt   DateTime @updatedAt
+// }
+
+// model Specs {
+//   id                      String   @id @default(uuid())
+
+//   product                 Product  @relation("ProductSpecs", fields: [productId], references: [id])
+//   productId               String   @unique 
+
+//   productSKUs             String?
+//   motherboard             String?
+//   processor               String?
+//   systemMemory            String?
+//   onBoardDevices          String?
+//   inputOutput             String?
+//   systemBIOS              String?
+//   management              String?
+//   security                String?
+//   pcHealthMonitoring      String?
+//   chassis                 String?
+//   dimensionsAndWeight     String?
+//   expansionSlots          String?
+//   driveBaysStorage        String?
+//   systemCooling           String?
+//   powerSupply             String?
+//   operatingEnvironment    String?
+
+//   createdAt               DateTime @default(now())
+//   updatedAt               DateTime @updatedAt
+// }
+
+
 model Service {
-  id          String    @id @default(uuid())
-  name        String
-  description String?
-  products    Product[]  // 👈 One-to-many relation
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
-model Product {
   id          String   @id @default(uuid())
-  name        String
-  description String?
-  price       Float
-  image       String?
-  service     Service  @relation(fields: [serviceId], references: [id])
-  serviceId   String
-
-  partner     Partner? @relation(fields: [partnerId], references: [id])
-  partnerId   String?
-
-  orderItems  OrderProduct[] 
-  specs       Specs?   @relation("ProductSpecs")
-
+  title       String
+  description String
+  items       Item[]   // One-to-Many
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
 
-model Specs {
-  id                      String   @id @default(uuid())
-
-  product                 Product  @relation("ProductSpecs", fields: [productId], references: [id])
-  productId               String   @unique 
-
-  productSKUs             String?
-  motherboard             String?
-  processor               String?
-  systemMemory            String?
-  onBoardDevices          String?
-  inputOutput             String?
-  systemBIOS              String?
-  management              String?
-  security                String?
-  pcHealthMonitoring      String?
-  chassis                 String?
-  dimensionsAndWeight     String?
-  expansionSlots          String?
-  driveBaysStorage        String?
-  systemCooling           String?
-  powerSupply             String?
-  operatingEnvironment    String?
-
-  createdAt               DateTime @default(now())
-  updatedAt               DateTime @updatedAt
+model Item {
+  id             String   @id @default(uuid())
+  title          String
+  slug           String   @unique
+  description    String
+  keyApplications String[]
+  keyFeatures     String[]
+  specifications  Json
+  images          String[]  // Array of image URLs
+  serviceId       String
+  service         Service  @relation(fields: [serviceId], references: [id])
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
+
 
 
 model Consultation {
@@ -107,14 +133,14 @@ model Consultation {
   userId      String
 }
 
-model Partner {
-  id        String    @id @default(uuid())
-  name      String
-  logo      String
-  website   String?
-  products  Product[] // 👈 One-to-many relation
-  createdAt DateTime  @default(now())
-}
+// model Partner {
+//   id        String    @id @default(uuid())
+//   name      String
+//   logo      String
+//   website   String?
+//   products  Product[] // 👈 One-to-many relation
+//   createdAt DateTime  @default(now())
+// }
 
 model GPURental {
   id         String   @id @default(uuid())
@@ -126,33 +152,33 @@ model GPURental {
   userId     String
 }
 
-model Order {
-  id          String         @id @default(uuid())
-  user        User   @relation(fields: [userId], references: [id])
-  userId      String
+// model Order {
+//   id          String         @id @default(uuid())
+//   user        User   @relation(fields: [userId], references: [id])
+//   userId      String
 
-  orderItems  OrderProduct[]  // 👈 relation to the join table
+//   orderItems  OrderProduct[]  // 👈 relation to the join table
 
-  totalAmount Float
-  status      OrderStatus     @default(PENDING)
+//   totalAmount Float
+//   status      OrderStatus     @default(PENDING)
 
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
-}
+//   createdAt   DateTime        @default(now())
+//   updatedAt   DateTime        @updatedAt
+// }
 
-model OrderProduct {
-  id        String   @id @default(uuid())
+// model OrderProduct {
+//   id        String   @id @default(uuid())
 
-  order     Order    @relation(fields: [orderId], references: [id])
-  orderId   String
+//   order     Order    @relation(fields: [orderId], references: [id])
+//   orderId   String
 
-  product   Product  @relation(fields: [productId], references: [id])
-  productId String
+//   product   Product  @relation(fields: [productId], references: [id])
+//   productId String
 
-  quantity  Int      @default(1)
+//   quantity  Int      @default(1)
 
-  createdAt DateTime @default(now())
-}
+//   createdAt DateTime @default(now())
+// }
 
 model Blog {
   id          String   @id @default(uuid())

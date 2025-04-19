@@ -15,6 +15,7 @@ import { SpecsModule } from './main/specs/specs.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './main/auth/jwt.strategy';
+import { ItemModule } from './main/item/item.module';
 
 
 @Module({
@@ -23,12 +24,12 @@ import { JwtStrategy } from './main/auth/jwt.strategy';
     UsersModule, 
     PrismaModule, 
     MailModule, 
-    ProductModule, 
+    // ProductModule, 
     ServiceModule, 
     BlogModule, 
     ContactModule, 
-    PartnerModule, 
-    SpecsModule,
+    // PartnerModule, 
+    // SpecsModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -41,6 +42,8 @@ import { JwtStrategy } from './main/auth/jwt.strategy';
       }),
       inject: [ConfigService],
     }),
+    
+    ItemModule,
     
   ],
   controllers: [AppController],
