@@ -190,12 +190,13 @@ model Blog {
   updatedAt   DateTime @updatedAt
 }
 
+
 model Contact {
-  id        String   @id @default(uuid())
-  name      String
-  email     String
-  phone     String
-  message   String
+  id      String @id @default(uuid())
+  name    String
+  email   String
+  message String
+  phone   String? // previously was "Phone"
   createdAt DateTime @default(now())
 }
 
