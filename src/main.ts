@@ -13,12 +13,13 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
+  console.log('Loaded JWT_SECRET:', process.env.JWT_SECRET);
   app.enableCors()
   SwaggerModule.setup('api', app, document); 
   await app.listen(process.env.PORT ?? 5432);
-  ConfigModule.forRoot({
-    isGlobal: true,
-  });
+  // ConfigModule.forRoot({
+  //   isGlobal: true,
+  // });
   
 }
 bootstrap();

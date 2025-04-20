@@ -8,7 +8,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, "jwt") {
   constructor(config: ConfigService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: config.getOrThrow<string>('JWT_SECRET')  || 'fallbacksecret',
+      secretOrKey: config.getOrThrow('JWT_SECRET'), // ❗ safer than get()
     });
   }
 
