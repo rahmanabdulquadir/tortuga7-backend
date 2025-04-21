@@ -12,7 +12,7 @@ export class AuthController {
 
   @Post('signup')
   signup(@Body() body: RegisterDto) {
-    return this.authService.signup(body.email, body.password, body.name);
+    return this.authService.signup(body.email, body.password, body.firstName, body.lastName, body.contactNo);
   }
 
   @Post('signin')

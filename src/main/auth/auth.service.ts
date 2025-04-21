@@ -25,21 +25,20 @@ export class AuthService {
     console.log('JWT_SECRET inside AuthService:', jwtSecret);
   }
 
-  async signup(email: string, password: string, name: string) {
+  async signup(email: string, password: string, firstName: string, lastName: string, contactNo: string) {
     const hashedPassword = await bcrypt.hash(password, 10);
-    return this.usersService.createUser(email, hashedPassword, name);
+    return this.usersService.createUser(email, hashedPassword, firstName, lastName, contactNo);
   }
 
   async signin(email: string, password: string) {
     const user = await this.usersService.findByEmail(email);
-    console.log(user);
     if (!user || !(await bcrypt.compare(password, user.password))) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
     // Create the payload for the JWT token
     const payload = { sub: user.id, role: user.role };
-    console.log('Signing with payload:', payload);
+    // console.log('Signing with payload:', payload);
 
     const jwtSecret = this.configService.get<string>('JWT_SECRET');
     if (!jwtSecret) {
@@ -54,7 +53,7 @@ export class AuthService {
     });
 
     console.log(accessToken)
-    return { access_token: accessToken };
+    return { access_token: accessToken, user: user };
   }
 
   async forgotPassword(email: string) {

@@ -8,8 +8,14 @@ export class RegisterDto {
   @ApiProperty({ example: 'strongPassword123' })
   password: string;
 
-  @ApiProperty({ example: 'Random User' })
-  name: string;
+  @ApiProperty({ example: 'Random' })
+  firstName: string;
+
+  @ApiProperty({ example: 'User' })
+  lastName: string;
+
+  @ApiProperty({ example: '696969696969' })
+  contactNo: string;
 }
 
 export class LoginDto {
