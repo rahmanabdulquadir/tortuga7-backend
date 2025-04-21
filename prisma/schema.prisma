@@ -18,8 +18,8 @@ model User {
   id          String   @id @default(uuid())
   email       String   @unique
   password    String
-  firstName   String
-  lastName    String
+  firstName   String?
+  lastName    String?
   contactNo   String?
   role        Role     @default(CLIENT)
   createdAt   DateTime @default(now())
