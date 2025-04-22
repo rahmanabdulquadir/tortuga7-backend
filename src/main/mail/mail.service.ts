@@ -12,7 +12,7 @@ export class MailService {
   });
 
   async sendResetPasswordEmail(to: string, token: string) {
-    const resetUrl = `http://localhost:5432/reset-password?token=${token}`;
+    const resetUrl = `https://heartfelt-faloodeh-02cd30.netlify.app/reset-password?token=${token}`;
 
     const mailOptions = {
       from: `"Tortuga App" <${process.env.EMAIL_USER}>`,

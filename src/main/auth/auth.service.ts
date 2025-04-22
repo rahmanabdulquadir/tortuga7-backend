@@ -61,8 +61,7 @@ export class AuthService {
     if (!user) throw new NotFoundException('User not found');
 
     const resetToken = crypto.randomBytes(32).toString('hex');
-    const resetTokenExp = new Date(Date.now() + 1000 * 60 * 10); // 10 minutes from now
-
+    const resetTokenExp = new Date(Date.now() + 1000 * 60 * 10); 
     await this.prisma.user.update({
       where: { email },
       data: { resetToken, resetTokenExp },
