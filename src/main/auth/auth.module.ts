@@ -8,37 +8,13 @@ import { AuthController } from './auth.controller';
 import { JwtStrategy } from './jwt.strategy';
 import { MailModule } from '../mail/mail.module';
 
-// @Module({
-//   imports: [
-//     UsersModule,
-//     MailModule,
-//     PassportModule,
-//     // ConfigModule,
-//     ConfigModule.forRoot({
-//       isGlobal: true,
-//     }),
-//     JwtModule.registerAsync({
-//       imports: [ConfigModule],
-//       useFactory: async (config: ConfigService) => ({
-//         secret: config.get<string>('JWT_SECRET'),
-//         signOptions: { expiresIn: config.get('JWT_EXPIRES_IN') },
-//       }),
-//       inject: [ConfigService],
-//     }),
-//   ],
-//   controllers: [AuthController],
-  
-//   providers: [AuthService, JwtService, ConfigService],
-// })
-// export class AuthModule {}
-
 
 @Module({
   imports: [
     UsersModule,
     MailModule,
     PassportModule,
-    JwtModule, // ✅ Let’s keep this simple if you're not using async config here
+    JwtModule,
     // JwtModule.registerAsync({
     //   imports: [ConfigModule],
     //   useFactory: async (config: ConfigService) => ({

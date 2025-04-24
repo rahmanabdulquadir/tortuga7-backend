@@ -25,10 +25,16 @@ export class CreateItemDto {
 
   @ApiProperty({
     example: {
-      CPU: 'AMD EPYC 9654',
-      GPU: '4x A100 80GB',
+      CPU: 'Intel Core i7-10700',
+      GPU: 'NVIDIA Quadro RTX 4000',
       RAM: '2048 GB DDR5 ECC',
-      Storage: '2x 4TB NVMe SSD'
+      chipset: "Intel W480",
+      Storage: '256GB M.2 NVMe',
+      memory: "32GB DDR4-3200",
+      weight: "8.2 kg (18.03 lb) (Typical)",
+      network: "Onboard -  Intel® I219LM PCIe GbE Controller (Intel® vPro™ with Intel® AMT 12.0)",
+      dimensions: "356 mm x 169 mm x 385 mm (14.0 x 6.7 x 15.2 in)",
+      rackMount: "5U, kit not sold by Userful (HP 2A8Y5AA)",
     }
   })
   @IsObject()

@@ -116,7 +116,7 @@ model Item {
   keyApplications String[]
   keyFeatures     String[]
   specifications  Json
-  images          String[]  // Array of image URLs
+  images          String[]  
   serviceId       String
   service         Service  @relation(fields: [serviceId], references: [id])
   createdAt       DateTime @default(now())
@@ -198,7 +198,7 @@ model Contact {
   name    String
   email   String
   message String
-  phone   String? // previously was "Phone"
+  phone   String? 
   createdAt DateTime @default(now())
 }
 
