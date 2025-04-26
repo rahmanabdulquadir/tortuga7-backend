@@ -51,24 +51,23 @@ model Profile {
 //   updatedAt   DateTime @updatedAt
 // }
 
-// model Product {
-//   id          String   @id @default(uuid())
-//   name        String
-//   description String?
-//   price       Float
-//   image       String?
-//   service     Service  @relation(fields: [serviceId], references: [id])
-//   serviceId   String
-
-//   partner     Partner? @relation(fields: [partnerId], references: [id])
-//   partnerId   String?
-
-//   orderItems  OrderProduct[] 
-//   specs       Specs?   @relation("ProductSpecs")
-
-//   createdAt   DateTime @default(now())
-//   updatedAt   DateTime @updatedAt
-// }
+model Product {
+  id              String     @id @default(uuid())
+  productName     String
+  productModel    String
+  brandName       String
+  slug            String     @unique
+  description     String
+  keyApplications String[]
+  keyFeatures     String[]
+  specifications  Json
+  images          String[]
+  price           Float
+  available       Boolean
+  serviceName     String
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+}
 
 // model Specs {
 //   id                      String   @id @default(uuid())
