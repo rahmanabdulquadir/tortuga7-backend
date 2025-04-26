@@ -34,7 +34,7 @@ export class CustomServerBuildService {
       ...(productModel && {
         productModel: {
           contains: productModel,
-          mode: Prisma.QueryMode.insensitive, // ✅ use enum here
+          mode: Prisma.QueryMode.insensitive, 
         },
       }),
     };
@@ -60,24 +60,28 @@ export class CustomServerBuildService {
     };
   }
   
-  async findOne(slug: string) {
-    const product = await this.prisma.product.findUnique({ where: { slug } });
 
+  async findOne(id: string) {
+    const product = await this.prisma.product.findUnique({
+      where: { id }, // 👈 now searching by ID
+    });
+  
     if (!product) {
       throw new NotFoundException('Product not found');
     }
-
+  
     return { success: true, serviceName: 'Custom Server Build', data: product };
   }
+  
 
-  async update(slug: string, data: UpdateCustomServerBuildDto) {
-    const existing = await this.prisma.product.findUnique({ where: { slug } });
+  async update(id: string, data: UpdateCustomServerBuildDto) {
+    const existing = await this.prisma.product.findUnique({ where: { id } });
     if (!existing) {
       throw new NotFoundException('Product not found');
     }
 
     const updated = await this.prisma.product.update({
-      where: { slug },
+      where: { id },
       data: {
         ...data,
       },

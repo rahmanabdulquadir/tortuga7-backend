@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
 import { CustomServerBuildService } from './custom-server-build.service';
 import { CreateCustomServerBuildDto } from './create-custom-server-build.dto';
 import { UpdateCustomServerBuildDto } from './update-custom-server-build.dto';
@@ -20,6 +20,9 @@ export class CustomServerBuildController {
   @Get()
   @ApiOperation({ summary: 'Get all Custom Server Build products with filters' })
   @ApiResponse({ status: 200, description: 'List of products.' })
+  @ApiQuery({ name: 'page', required: false })
+  @ApiQuery({ name: 'limit', required: false })
+  @ApiQuery({ name: 'productModel', required: false })
   findAll(
     @Query('page') page?: string,
     @Query('limit') limit?: string,
@@ -32,18 +35,18 @@ export class CustomServerBuildController {
     });
   }
 
-  @Get(':slug')
-  @ApiOperation({ summary: 'Get a single product by slug' })
+  @Get(':id')
+  @ApiOperation({ summary: 'Get a single product by ID' })
   @ApiResponse({ status: 200, description: 'Product details.' })
-  findOne(@Param('slug') slug: string) {
-    return this.service.findOne(slug);
+  findOne(@Param('id') id: string) {
+    return this.service.findOne(id);
   }
 
-  @Patch(':slug')
-  @ApiOperation({ summary: 'Update a product by slug' })
+  @Patch(':id')
+  @ApiOperation({ summary: 'Update a product by id' })
   @ApiResponse({ status: 200, description: 'Product updated successfully.' })
-  update(@Param('slug') slug: string, @Body() data: UpdateCustomServerBuildDto) {
-    return this.service.update(slug, data);
+  update(@Param('id') id: string, @Body() data: UpdateCustomServerBuildDto) {
+    return this.service.update(id, data);
   }
 
   @Delete(':slug')
