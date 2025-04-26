@@ -90,13 +90,13 @@ export class CustomServerBuildService {
     return { success: true, message: 'Product updated successfully', data: updated };
   }
 
-  async delete(slug: string) {
-    const existing = await this.prisma.product.findUnique({ where: { slug } });
+  async delete(id: string) {
+    const existing = await this.prisma.product.findUnique({ where: { id } });
     if (!existing) {
       throw new NotFoundException('Product not found');
     }
 
-    await this.prisma.product.delete({ where: { slug } });
+    await this.prisma.product.delete({ where: { id } });
 
     return { success: true, message: 'Product deleted successfully' };
   }

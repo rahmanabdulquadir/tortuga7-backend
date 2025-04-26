@@ -49,10 +49,10 @@ export class CustomServerBuildController {
     return this.service.update(id, data);
   }
 
-  @Delete(':slug')
-  @ApiOperation({ summary: 'Delete a product by slug' })
+  @Delete(':id')
+  @ApiOperation({ summary: 'Delete a product by id' })
   @ApiResponse({ status: 200, description: 'Product deleted successfully.' })
-  delete(@Param('slug') slug: string) {
+  delete(@Param('id') slug: string) {
     return this.service.delete(slug);
   }
 }
