@@ -16,6 +16,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './main/auth/jwt.strategy';
 import { ItemModule } from './main/item/item.module';
+import { CustomServerBuildService } from './main/custom-server-build/custom-server-build.service';
+import { CustomServerBuildController } from './main/custom-server-build/custom-server-build.controller';
+import { CustomServerBuildModule } from './main/custom-server-build/custom-server-build.module';
 
 
 @Module({
@@ -45,9 +48,11 @@ import { ItemModule } from './main/item/item.module';
     
     ItemModule,
     
+    CustomServerBuildModule,
+    
   ],
-  controllers: [AppController],
-  providers: [AppService, SeederService, JwtStrategy],
+  controllers: [AppController, CustomServerBuildController],
+  providers: [AppService, SeederService, JwtStrategy, CustomServerBuildService],
 })
 export class AppModule {}
 
