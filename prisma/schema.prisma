@@ -69,6 +69,7 @@ model Product {
   updatedAt       DateTime   @updatedAt
 }
 
+
 // model Specs {
 //   id                      String   @id @default(uuid())
 

@@ -6,8 +6,8 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const config = new DocumentBuilder()
-    .setTitle('Tortuga 7 Auth API')
-    .setDescription('Authentication and Authorization APIs')
+    .setTitle('Tortuga 7 Backend System')
+    .setDescription('Tortuga7 APIs')
     .setVersion('1.0')
     .addBearerAuth()
     .build();
@@ -17,9 +17,5 @@ async function bootstrap() {
   app.enableCors()
   SwaggerModule.setup('api', app, document); 
   await app.listen(process.env.PORT ?? 5432);
-  // ConfigModule.forRoot({
-  //   isGlobal: true,
-  // });
-  
 }
 bootstrap();
