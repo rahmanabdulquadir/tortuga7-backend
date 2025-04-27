@@ -34,17 +34,35 @@ export class CustomServerBuildService {
       ...(productModel && {
         productModel: {
           contains: productModel,
-          mode: Prisma.QueryMode.insensitive, 
+          mode: Prisma.QueryMode.insensitive,
         },
       }),
     };
   
     const total = await this.prisma.product.count({ where });
+  
     const data = await this.prisma.product.findMany({
       where,
       skip: (page - 1) * limit,
       take: limit,
       orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        serviceName: true,
+        productName: true,
+        productModel: true,
+        brandName: true,
+        slug: true,
+        description: true,
+        keyApplications: true,
+        keyFeatures: true,
+        specifications: true,
+        images: true,
+        price: true,
+        available: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
   
     return {
