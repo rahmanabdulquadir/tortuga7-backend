@@ -15,32 +15,31 @@ datasource db {
 }
 
 model User {
-  id          String   @id @default(uuid())
-  email       String   @unique
-  password    String
-  firstName   String?
-  lastName    String?
-  contactNo   String?
-  role        Role     @default(CLIENT)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  profile     Profile?
-  resetToken      String?  
-  resetTokenExp   DateTime?
+  id            String         @id @default(uuid())
+  email         String         @unique
+  password      String
+  firstName     String?
+  lastName      String?
+  contactNo     String?
+  role          Role           @default(CLIENT)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  profile       Profile?
+  resetToken    String?
+  resetTokenExp DateTime?
   consultations Consultation[]
-  gpuRentals  GPURental[]
+  gpuRentals    GPURental[]
   // orders         Order[]  
 }
 
 model Profile {
-  id        String  @id @default(uuid())
-  name      String
-  phone     String?
-  company   String?
-  user      User    @relation(fields: [userId], references: [id])
-  userId    String  @unique
+  id      String  @id @default(uuid())
+  name    String
+  phone   String?
+  company String?
+  user    User    @relation(fields: [userId], references: [id])
+  userId  String  @unique
 }
-
 
 // model Service {
 //   id          String    @id @default(uuid())
@@ -52,12 +51,13 @@ model Profile {
 // }
 
 model Product {
-  id              String     @id @default(uuid())
+  id              String   @id @default(uuid())
   productName     String
   productModel    String
   brandName       String
-  slug            String     @unique
+  slug            String   @unique
   description     String
+  filters         Json?
   keyApplications String[]
   keyFeatures     String[]
   specifications  Json
@@ -65,65 +65,36 @@ model Product {
   price           Float
   available       Boolean
   serviceName     String
-  createdAt       DateTime   @default(now())
-  updatedAt       DateTime   @updatedAt
+  serviceId       String?   @unique
+  service         Service?  @relation(fields: [serviceId], references: [id])
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
-
-
-// model Specs {
-//   id                      String   @id @default(uuid())
-
-//   product                 Product  @relation("ProductSpecs", fields: [productId], references: [id])
-//   productId               String   @unique 
-
-//   productSKUs             String?
-//   motherboard             String?
-//   processor               String?
-//   systemMemory            String?
-//   onBoardDevices          String?
-//   inputOutput             String?
-//   systemBIOS              String?
-//   management              String?
-//   security                String?
-//   pcHealthMonitoring      String?
-//   chassis                 String?
-//   dimensionsAndWeight     String?
-//   expansionSlots          String?
-//   driveBaysStorage        String?
-//   systemCooling           String?
-//   powerSupply             String?
-//   operatingEnvironment    String?
-
-//   createdAt               DateTime @default(now())
-//   updatedAt               DateTime @updatedAt
-// }
-
 
 model Service {
   id          String   @id @default(uuid())
   title       String
   description String
-  items       Item[]   // One-to-Many
+  products    Product[]
+  items       Item[] 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
 
 model Item {
-  id             String   @id @default(uuid())
-  title          String
-  slug           String   @unique
-  description    String
+  id              String   @id @default(uuid())
+  title           String
+  slug            String   @unique
+  description     String
   keyApplications String[]
   keyFeatures     String[]
   specifications  Json
-  images          String[]  
+  images          String[]
   serviceId       String
-  service         Service  @relation(fields: [serviceId], references: [id])
+  service         Service  @relation(fields: [serviceId], references: [id]) 
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }
-
-
 
 model Consultation {
   id          String   @id @default(uuid())
@@ -145,13 +116,13 @@ model Consultation {
 // }
 
 model GPURental {
-  id         String   @id @default(uuid())
-  gpuType    String
-  startDate  DateTime
-  endDate    DateTime
-  status     String   @default("active")
-  user       User     @relation(fields: [userId], references: [id])
-  userId     String
+  id        String   @id @default(uuid())
+  gpuType   String
+  startDate DateTime
+  endDate   DateTime
+  status    String   @default("active")
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
 }
 
 // model Order {
@@ -183,25 +154,23 @@ model GPURental {
 // }
 
 model Blog {
-  id          String   @id @default(uuid())
-  title       String
-  content     String
-  finalWords  String
-  image       String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         String   @id @default(uuid())
+  title      String
+  content    String
+  finalWords String
+  image      String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
-
 
 model Contact {
-  id      String @id @default(uuid())
-  name    String
-  email   String
-  message String
-  phone   String? 
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  message   String
+  phone     String?
   createdAt DateTime @default(now())
 }
-
 
 enum Role {
   ADMIN
@@ -215,4 +184,3 @@ enum OrderStatus {
   FAILED
   CANCELLED
 }
-

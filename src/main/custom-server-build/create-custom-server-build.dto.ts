@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class CreateCustomServerBuildDto {
   @ApiProperty()
@@ -26,6 +26,12 @@ export class CreateCustomServerBuildDto {
   @IsString()
   @IsOptional()
   description?: string;
+
+
+  @ApiProperty({ type: 'array', items: { type: 'object' } })
+  @IsArray()
+  @IsOptional()
+  filters?: any[];
 
   @ApiProperty({ type: [String] })
   @IsArray()
@@ -54,4 +60,8 @@ export class CreateCustomServerBuildDto {
   @ApiProperty()
   @IsBoolean()
   available: boolean;
+
+  @ApiProperty({ example: '3f23a23f-2432-48bc-94ad-0d1a95c125b2' })
+    @IsUUID()
+    serviceId: string;
 }

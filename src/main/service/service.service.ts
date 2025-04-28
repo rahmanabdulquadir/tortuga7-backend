@@ -39,7 +39,7 @@ export class ServiceService {
 
   async findAll() {
     const services = await this.prisma.service.findMany({
-      include: { items: true },
+      include: { products: true },
     });
 
     const serviceTitles = services.map(service => service.title);
