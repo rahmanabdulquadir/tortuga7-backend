@@ -19,6 +19,7 @@ import { ItemModule } from './main/item/item.module';
 import { CustomServerBuildService } from './main/custom-server-build/custom-server-build.service';
 import { CustomServerBuildController } from './main/custom-server-build/custom-server-build.controller';
 import { CustomServerBuildModule } from './main/custom-server-build/custom-server-build.module';
+import { SpecModule } from './main/spec/spec.module';
 
 
 @Module({
@@ -49,6 +50,8 @@ import { CustomServerBuildModule } from './main/custom-server-build/custom-serve
     ItemModule,
     
     CustomServerBuildModule,
+    
+    SpecModule,
     
   ],
   controllers: [AppController, CustomServerBuildController],
