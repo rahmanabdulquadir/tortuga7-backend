@@ -54,7 +54,7 @@ export class ServiceService {
   findOne(id: string) {
     return this.prisma.service.findUnique({
       where: { id },
-      include: { items: true },
+      include: { products: true },
     });
   }
 

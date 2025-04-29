@@ -15,7 +15,6 @@ import { ContactModule } from './main/contact/contact.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './main/auth/jwt.strategy';
-import { ItemModule } from './main/item/item.module';
 import { CustomServerBuildService } from './main/custom-server-build/custom-server-build.service';
 import { CustomServerBuildController } from './main/custom-server-build/custom-server-build.controller';
 import { CustomServerBuildModule } from './main/custom-server-build/custom-server-build.module';
@@ -47,7 +46,6 @@ import { SpecModule } from './main/spec/spec.module';
       inject: [ConfigService],
     }),
     
-    ItemModule,
     
     CustomServerBuildModule,
     

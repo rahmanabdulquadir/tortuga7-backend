@@ -41,70 +41,67 @@ model Profile {
   userId  String  @unique
 }
 
-// model Service {
-//   id          String    @id @default(uuid())
-//   name        String
-//   description String?
-//   products    Product[]  // 👈 One-to-many relation
-//   createdAt   DateTime @default(now())
-//   updatedAt   DateTime @updatedAt
-// }
+model Service {
+  id          String    @id @default(uuid())
+  title       String
+  description String
+  products    Product[]   // A service has many products
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
 
 model Product {
-  id              String   @id @default(uuid())
+  id              String    @id @default(uuid())
   productName     String
   productModel    String
   brandName       String
-  slug            String   @unique
+  slug            String    @unique
   description     String
   filters         Json?
   keyApplications String[]
   keyFeatures     String[]
-  specifications  Json
   images          String[]
   price           Float
   available       Boolean
-  serviceName     String
-  serviceId       String?   @unique
-  service         Service?  @relation(fields: [serviceId], references: [id])
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-}
 
-model Service {
-  id          String   @id @default(uuid())
-  title       String
-  description String
-  products    Product[]
-  items       Item[] 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  serviceId       String?                      // <--- Foreign key to Service
+  service         Service?   @relation(fields: [serviceId], references: [id])
+
+  specs           Spec[]                   // <--- Product has many Specs
+
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
 }
 
 model Spec {
-  id          String   @id @default(uuid())
+  id          String    @id @default(uuid())
   title       String
   description String?
-  data        Json     // <-- important: we store JSON here
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  data        Json
+
+  productId   String?                      // <--- Foreign key to Product
+  product     Product?   @relation(fields: [productId], references: [id])
+
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 }
 
 
-model Item {
-  id              String   @id @default(uuid())
-  title           String
-  slug            String   @unique
-  description     String
-  keyApplications String[]
-  keyFeatures     String[]
-  specifications  Json
-  images          String[]
-  serviceId       String
-  service         Service  @relation(fields: [serviceId], references: [id]) 
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-}
+
+// model Item {
+//   id              String   @id @default(uuid())
+//   title           String
+//   slug            String   @unique
+//   description     String
+//   keyApplications String[]
+//   keyFeatures     String[]
+//   specifications  Json
+//   images          String[]
+//   serviceId       String
+//   service         Service  @relation(fields: [serviceId], references: [id]) 
+//   createdAt       DateTime @default(now())
+//   updatedAt       DateTime @updatedAt
+// }
 
 model Consultation {
   id          String   @id @default(uuid())

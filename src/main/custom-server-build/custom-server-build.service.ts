@@ -13,11 +13,11 @@ export class CustomServerBuildService {
     const newProduct = await this.prisma.product.create({
       data: {
         ...data,
-        serviceName: 'Custom Server Build',
+        // serviceName: 'Custom Server Build',
         description: data.description ?? '',
         keyApplications: data.keyApplications ?? [],
         keyFeatures: data.keyFeatures ?? [],
-        specifications: data.specifications ?? [],
+        // specifications: data.specifications ?? [],
         images: data.images ?? [],
         // serviceId: data.serviceId
       },
@@ -31,7 +31,7 @@ export class CustomServerBuildService {
     const { page = 1, limit = 10, productModel } = query;
   
     const where: Prisma.ProductWhereInput = {
-      serviceName: 'Custom Server Build',
+      // serviceName: 'Custom Server Build',
       ...(productModel && {
         productModel: {
           contains: productModel,
@@ -49,7 +49,7 @@ export class CustomServerBuildService {
       orderBy: { createdAt: 'desc' },
       select: {
         id: true,
-        serviceName: true,
+        // serviceName: true,
         productName: true,
         productModel: true,
         brandName: true,
@@ -58,7 +58,7 @@ export class CustomServerBuildService {
         filters: true,
         keyApplications: true,
         keyFeatures: true,
-        specifications: true,
+        // specifications: true,
         images: true,
         price: true,
         available: true,
