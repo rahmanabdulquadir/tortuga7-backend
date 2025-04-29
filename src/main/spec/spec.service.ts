@@ -9,9 +9,19 @@ export class SpecService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createSpecDto: CreateSpecDto) {
+    const { productId, ...rest } = createSpecDto;
+  
     const spec = await this.prisma.spec.create({
-      data: createSpecDto,
+      data: {
+        ...rest,
+        ...(productId && {
+          product: {
+            connect: { id: productId },
+          },
+        }),
+      },
     });
+  
     return { success: true, message: 'Spec created successfully', data: spec };
   }
 

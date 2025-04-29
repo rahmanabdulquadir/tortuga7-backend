@@ -5,6 +5,10 @@
 // import { FilterProductDto } from './filter-product.dto';
 // import { Prisma } from '@prisma/client';
 
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { PrismaService } from "src/prisma/prisma.service";
+import { CreateProductDto } from "./create-product.dto";
+
 // @Injectable()
 // export class ProductService {
 //   constructor(private prisma: PrismaService) {}
@@ -106,3 +110,54 @@
 //     });
 //   }
 // }
+
+
+
+
+@Injectable()
+export class ProductService {
+  constructor(private prisma: PrismaService) {}
+
+  async create(dto: CreateProductDto) {
+    const {
+      serviceId,
+      ...rest
+    } = dto;
+  
+    return this.prisma.product.create({
+      data: {
+        ...rest,
+        service: {
+          connect: { id: serviceId },
+        },
+      },
+    });
+  }
+  async findAll() {
+    return this.prisma.product.findMany({
+      include: { service: true, specs: true },
+    });
+  }
+
+  async findOne(id: string) {
+    return this.prisma.product.findUnique({
+      where: { id },
+      include: { service: true, specs: true },
+    });
+  }
+
+  async remove(id: string) {
+    const product = await this.prisma.product.findUnique({ where: { id } });
+  
+    if (!product) {
+      throw new NotFoundException('Product not found');
+    }
+  
+    await this.prisma.product.delete({ where: { id } });
+  
+    return {
+      success: true,
+      message: 'Product deleted successfully',
+    };
+  }
+}

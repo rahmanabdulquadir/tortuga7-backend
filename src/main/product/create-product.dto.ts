@@ -1,41 +1,39 @@
-// // src/product/dto/create-product.dto.ts
-// import { IsString, IsNumber, IsOptional, ValidateNested } from 'class-validator';
-// import { Type } from 'class-transformer';
-// import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-// import { CreateSpecsDto } from '../specs/create-specs.dto';
+import { ApiProperty } from '@nestjs/swagger';
 
+export class CreateProductDto {
+  @ApiProperty()
+  productName: string;
 
-// export class CreateProductDto {
-//   @ApiProperty({ example: 'Tire Wash' })
-//   @IsString()
-//   name: string;
+  @ApiProperty()
+  productModel: string;
 
-//   @ApiPropertyOptional({ example: 'Detailed cleaning of all tires' })
-//   @IsOptional()
-//   @IsString()
-//   description?: string;
+  @ApiProperty()
+  brandName: string;
 
-//   @ApiProperty({ example: 25 })
-//   @IsNumber()
-//   price: number;
+  @ApiProperty()
+  slug: string;
 
-//   @ApiPropertyOptional({ example: 'https://example.com/image.jpg' })
-//   @IsOptional()
-//   @IsString()
-//   image?: string;
+  @ApiProperty()
+  description: string;
 
-//   @ApiProperty({ example: 'service-id-here' })
-//   @IsString()
-//   serviceId: string;
+//   @ApiProperty({ type: 'object' })
+//   filters?: Record<string, any>;
 
-//   @ApiPropertyOptional({ example: 'partner-id-here' })
-//   @IsOptional()
-//   @IsString()
-//   partnerId?: string;
+  @ApiProperty({ type: [String] })
+  keyApplications: string[];
 
-//   @ApiPropertyOptional({ type: () => CreateSpecsDto })
-//   @IsOptional()
-//   @ValidateNested()
-//   @Type(() => CreateSpecsDto)
-//   specs?: CreateSpecsDto;
-// }
+  @ApiProperty({ type: [String] })
+  keyFeatures: string[];
+
+  @ApiProperty({ type: [String] })
+  images: string[];
+
+  @ApiProperty()
+  price: number;
+
+  @ApiProperty()
+  available: boolean;
+
+  @ApiProperty()
+  serviceId: string;
+}

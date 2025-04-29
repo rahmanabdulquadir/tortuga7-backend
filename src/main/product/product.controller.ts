@@ -1,19 +1,18 @@
-// import {
-//     Controller,
-//     Get,
-//     Post,
-//     Body,
-//     Param,
-//     Patch,
-//     Delete,
-//     Query,
-//     ValidationPipe,
-//   } from '@nestjs/common';
-//   import { ProductService } from './product.service';
-//   import { ApiTags } from '@nestjs/swagger';
-// import { CreateProductDto } from './create-product.dto';
-// import { UpdateProductDto } from './update-product.dto';
-// import { FilterProductDto } from './filter-product.dto';
+import {
+    Controller,
+    Get,
+    Post,
+    Body,
+    Param,
+    Patch,
+    Delete,
+    Query,
+    ValidationPipe,
+  } from '@nestjs/common';
+  import { ProductService } from './product.service';
+  import { ApiTags } from '@nestjs/swagger';
+import { CreateProductDto } from './create-product.dto';
+
   
 //   @ApiTags('Products')
 //   @Controller('products')
@@ -58,3 +57,31 @@
 //     }
 //   }
   
+
+
+
+
+@Controller('products')
+export class ProductController {
+  constructor(private readonly productService: ProductService) {}
+
+  @Post()
+  create(@Body() dto: CreateProductDto) {
+    return this.productService.create(dto);
+  }
+
+  @Get()
+  findAll() {
+    return this.productService.findAll();
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.productService.findOne(id);
+  }
+
+  @Delete(':id')
+remove(@Param('id') id: string) {
+  return this.productService.remove(id);
+}
+}

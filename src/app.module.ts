@@ -19,6 +19,7 @@ import { CustomServerBuildService } from './main/custom-server-build/custom-serv
 import { CustomServerBuildController } from './main/custom-server-build/custom-server-build.controller';
 import { CustomServerBuildModule } from './main/custom-server-build/custom-server-build.module';
 import { SpecModule } from './main/spec/spec.module';
+import { ProductModule } from './main/product/product.module';
 
 
 @Module({
@@ -27,7 +28,7 @@ import { SpecModule } from './main/spec/spec.module';
     UsersModule, 
     PrismaModule, 
     MailModule, 
-    // ProductModule, 
+    ProductModule, 
     ServiceModule, 
     BlogModule, 
     ContactModule, 
