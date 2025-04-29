@@ -81,6 +81,16 @@ model Service {
   updatedAt   DateTime @updatedAt
 }
 
+model Spec {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  data        Json     // <-- important: we store JSON here
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+
 model Item {
   id              String   @id @default(uuid())
   title           String
