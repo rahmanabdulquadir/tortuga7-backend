@@ -2,6 +2,8 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { SpecService } from './spec.service';
 import { CreateSpecDto } from './create-spec.dto';
 import { UpdateSpecDto } from './update-spec.dto';
+import { AddSpecDataDto } from './add-spec-data.dto';
+import { ApiBody, ApiParam } from '@nestjs/swagger';
 
 
 @Controller('specs')
@@ -22,6 +24,24 @@ export class SpecController {
   findOne(@Param('id') id: string) {
     return this.specService.findOne(id);
   }
+
+  // src/spec/spec.controller.ts
+  @Post(':id/data')
+  @ApiParam({ name: 'id', type: String })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      additionalProperties: { type: 'string' },
+      example: { RAM: '128GB DDR5 ECC' },
+    },
+  })
+  async addDataToSpec(
+    @Param('id') id: string,
+    @Body() body: AddSpecDataDto,
+  ) {
+    return this.specService.addDataToSpec(id, body);
+  }
+  
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateSpecDto: UpdateSpecDto) {
