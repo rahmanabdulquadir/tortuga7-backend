@@ -46,7 +46,13 @@ export class ServiceService {
 
   async findAll() {
     return this.prisma.service.findMany({
-      include: { products: true },
+      include: {
+        products: {
+          include: {
+            specs: true, // 👈 this is the missing part
+          },
+        },
+      },
     });
   }
 
