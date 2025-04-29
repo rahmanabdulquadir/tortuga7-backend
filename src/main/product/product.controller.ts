@@ -4,84 +4,65 @@ import {
     Post,
     Body,
     Param,
-    Patch,
     Delete,
     Query,
-    ValidationPipe,
+    BadRequestException,
   } from '@nestjs/common';
   import { ProductService } from './product.service';
-  import { ApiTags } from '@nestjs/swagger';
-import { CreateProductDto } from './create-product.dto';
+  import { CreateProductDto } from './create-product.dto';
+  
+  @Controller('products')
+  export class ProductController {
+    constructor(private readonly productService: ProductService) {}
+  
+    @Post()
+    create(@Body() dto: CreateProductDto) {
+      return this.productService.create(dto);
+    }
 
+    @Get()
+    findAll() {
+      return this.productService.findAll();
+    }
   
-//   @ApiTags('Products')
-//   @Controller('products')
-//   export class ProductController {
-//     constructor(private readonly productService: ProductService) {}
   
-//     @Post()
-//     create(@Body() dto: CreateProductDto) {
-//       return this.productService.create(dto);
-//     }
+    // @Get()
+    // async findFiltered(
+    //   @Query('serviceId') serviceId?: string,
+    //   @Query('filters') filtersRaw?: string,
+    // ) {
+    //   let filters: Record<string, string> | undefined;
   
-//   //   @Get()
-//   // findAll(@Query() query: FilterProductDto) {
-//   //   return this.productService.findAll();
-//   // }
-
-//   @Get()
-//   findAll(
-//     @Query(new ValidationPipe({ transform: true })) filter?: FilterProductDto,
-//   ) {
-//     return this.productService.findAll(filter);
-//   }
+    //   try {
+    //     filters = filtersRaw ? JSON.parse(filtersRaw) : undefined;
+    //   } catch (e) {
+    //     throw new BadRequestException('Invalid filters format');
+    //   }
   
-//     @Get(':id')
-//     findOne(@Param('id') id: string) {
-//       return this.productService.findOne(id);
-//     }
+    //   return this.productService.findAllFiltered({ serviceId, filters });
+    // }
   
-//     @Patch(':id')
-//     update(@Param('id') id: string, @Body() dto: UpdateProductDto) {
-//       return this.productService.update(id, dto);
-//     }
+    // ✅ New route: GET /products/search-by-spec?value=SSG-542B-E1CR60
+    @Get('/search-by-spec')
+    async findBySpecValue(
+      @Query('value') value: string,
+      @Query('serviceId') serviceId?: string,
+    ) {
+      if (!value) {
+        throw new BadRequestException('Missing value query parameter');
+      }
   
-//     @Delete(':id')
-//     remove(@Param('id') id: string) {
-//       return this.productService.remove(id);
-//     }
+      return this.productService.findAllBySpecValue(value, serviceId);
+    }
   
-//     @Get('/by-service/:serviceId')
-//     findByService(@Param('serviceId') serviceId: string) {
-//       return this.productService.findByService(serviceId);
-//     }
-//   }
+    @Get(':id')
+    findOne(@Param('id') id: string) {
+      return this.productService.findOne(id);
+    }
   
-
-
-
-
-@Controller('products')
-export class ProductController {
-  constructor(private readonly productService: ProductService) {}
-
-  @Post()
-  create(@Body() dto: CreateProductDto) {
-    return this.productService.create(dto);
+    @Delete(':id')
+    remove(@Param('id') id: string) {
+      return this.productService.remove(id);
+    }
   }
-
-  @Get()
-  findAll() {
-    return this.productService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.productService.findOne(id);
-  }
-
-  @Delete(':id')
-remove(@Param('id') id: string) {
-  return this.productService.remove(id);
-}
-}
+  

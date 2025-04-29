@@ -1,129 +1,25 @@
-// import { Injectable, NotFoundException } from '@nestjs/common';
-// import { PrismaService } from 'src/prisma/prisma.service';
-// import { CreateProductDto } from './create-product.dto';
-// import { UpdateProductDto } from './update-product.dto';
-// import { FilterProductDto } from './filter-product.dto';
-// import { Prisma } from '@prisma/client';
-
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { PrismaService } from "src/prisma/prisma.service";
-import { CreateProductDto } from "./create-product.dto";
-
-// @Injectable()
-// export class ProductService {
-//   constructor(private prisma: PrismaService) {}
-
-//   async create(dto: CreateProductDto) {
-//     const { specs, ...productData } = dto;
-  
-//     return this.prisma.product.create({
-//       data: {
-//         ...productData,
-//         specs: specs ? { create: specs } : undefined,
-//       },
-//       include: {
-//         specs: true, // optional: includes specs in response
-//       },
-//     });
-//   }
-
-//   // async findAll() {
-//   //   return this.prisma.product.findMany({
-//   //     include: { service: true },
-//   //   });
-//   // }
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { CreateProductDto } from './create-product.dto';
+import { Product } from '@prisma/client'; // at the top
 
 
 
-//   async findAll(filter?: FilterProductDto) {
-//     const { search, minPrice, maxPrice, serviceId, partnerId } = filter || {};
-  
-//     const conditions: Prisma.ProductWhereInput[] = [];
-  
-//     if (search) {
-//       conditions.push({
-//         OR: [
-//           { name: { contains: search, mode: 'insensitive' } },
-//           { description: { contains: search, mode: 'insensitive' } },
-//         ],
-//       });
-//     }
-//     console.log(typeof minPrice, minPrice);
-//     if (minPrice !== undefined) {
-//       conditions.push({ price: { gte: minPrice } });
-//     }
-  
-//     if (maxPrice !== undefined) {
-//       conditions.push({ price: { lte: maxPrice } });
-//     }
-  
-//     if (serviceId) {
-//       conditions.push({ serviceId });
-//     }
-  
-//     if (partnerId) {
-//       conditions.push({ partnerId });
-//     }
-  
-//     return this.prisma.product.findMany({
-//       where: conditions.length > 0 ? { AND: conditions } : undefined,
-//       include: {
-//         service: true,
-//       },
-//     });
-//   }
-  
+function buildSpecFilterArray(filters?: Record<string, string>) {
+  if (!filters) return [];
 
-
-//   async findOne(id: string) {
-//     const product = await this.prisma.product.findUnique({ where: { id } });
-//     if (!product) throw new NotFoundException('Product not found');
-//     return product;
-//   }
-
-//   async update(id: string, dto: UpdateProductDto) {
-//     const { specs, ...productData } = dto;
-  
-//     return this.prisma.product.update({
-//       where: { id },
-//       data: {
-//         ...productData,
-//         specs: specs
-//           ? {
-//               update: specs,
-//             }
-//           : undefined,
-//       },
-//       include: {
-//         specs: true, // optional: return updated specs
-//       },
-//     });
-//   }
-
-//   async remove(id: string) {
-//     return this.prisma.product.delete({ where: { id } });
-//   }
-
-//   async findByService(serviceId: string) {
-//     return this.prisma.product.findMany({
-//       where: { serviceId },
-//     });
-//   }
-// }
-
-
-
+  return Object.entries(filters).map(([key, value]) => ({
+    [key]: value,
+  }));
+}
 
 @Injectable()
 export class ProductService {
   constructor(private prisma: PrismaService) {}
 
   async create(dto: CreateProductDto) {
-    const {
-      serviceId,
-      ...rest
-    } = dto;
-  
+    const { serviceId, ...rest } = dto;
+
     return this.prisma.product.create({
       data: {
         ...rest,
@@ -133,11 +29,43 @@ export class ProductService {
       },
     });
   }
+
   async findAll() {
     return this.prisma.product.findMany({
       include: { service: true, specs: true },
     });
   }
+
+//   async findAllFiltered(query: {
+//     serviceId?: string;
+//     filters?: Record<string, string>;
+//   }) {
+//     const { serviceId, filters } = query;
+
+//     const products = await this.prisma.product.findMany({
+//       where: {
+//         ...(serviceId && { serviceId }),
+
+//         specs: {
+//           some: {
+//             data: {
+//               path: [],
+//               array_contains: buildSpecFilterArray(filters),
+//             },
+//           },
+//         },
+//       },
+//       include: {
+//         specs: true,
+//       },
+//     });
+
+//     return {
+//       success: true,
+//       count: products.length,
+//       data: products,
+//     };
+//   }
 
   async findOne(id: string) {
     return this.prisma.product.findUnique({
@@ -148,16 +76,42 @@ export class ProductService {
 
   async remove(id: string) {
     const product = await this.prisma.product.findUnique({ where: { id } });
-  
+
     if (!product) {
       throw new NotFoundException('Product not found');
     }
-  
+
     await this.prisma.product.delete({ where: { id } });
-  
+
     return {
       success: true,
       message: 'Product deleted successfully',
     };
   }
+
+  // ✅ New dynamic filter method (raw SQL)
+  async findAllBySpecValue(value: string, serviceId?: string) {
+    const serviceFilter = serviceId ? `AND p."serviceId" = $2` : '';
+  
+    const query = `
+      SELECT DISTINCT p.*
+      FROM "Product" p
+      JOIN "Spec" s ON s."productId" = p.id
+      WHERE EXISTS (
+        SELECT 1 FROM jsonb_array_elements(s.data) elem
+        WHERE elem::text ILIKE $1
+      )
+      ${serviceFilter};
+    `;
+  
+    const params = serviceId ? [`%${value}%`, serviceId] : [`%${value}%`];
+  
+    const products = await this.prisma.$queryRawUnsafe<Product[]>(query, ...params);
+  
+    return {
+      success: true,
+      count: products.length,
+      data: products,
+    };
+  }  
 }
