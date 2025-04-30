@@ -6,18 +6,12 @@ import { PrismaModule } from './prisma/prisma.module';
 import { UsersModule } from './main/user/user.module';
 import { SeederService } from './prisma/seeder.service';
 import { MailModule } from './main/mail/mail.module';
-// import { ProductModule } from './main/product/product.module';
 import { ServiceModule } from './main/service/service.module';
 import { BlogModule } from './main/blog/blog.module';
 import { ContactModule } from './main/contact/contact.module';
-// import { PartnerModule } from './main/partner/partner.module';
-// import { SpecsModule } from './main/specs/specs.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './main/auth/jwt.strategy';
-import { CustomServerBuildService } from './main/custom-server-build/custom-server-build.service';
-import { CustomServerBuildController } from './main/custom-server-build/custom-server-build.controller';
-import { CustomServerBuildModule } from './main/custom-server-build/custom-server-build.module';
 import { SpecModule } from './main/spec/spec.module';
 import { ProductModule } from './main/product/product.module';
 
@@ -32,8 +26,6 @@ import { ProductModule } from './main/product/product.module';
     ServiceModule, 
     BlogModule, 
     ContactModule, 
-    // PartnerModule, 
-    // SpecsModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -48,13 +40,11 @@ import { ProductModule } from './main/product/product.module';
     }),
     
     
-    CustomServerBuildModule,
-    
     SpecModule,
     
   ],
-  controllers: [AppController, CustomServerBuildController],
-  providers: [AppService, SeederService, JwtStrategy, CustomServerBuildService],
+  controllers: [AppController,],
+  providers: [AppService, SeederService, JwtStrategy,],
 })
 export class AppModule {}
 
