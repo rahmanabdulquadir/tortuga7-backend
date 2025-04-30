@@ -31,7 +31,7 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth() // Enables Swagger's Bearer Token usage
+  @ApiBearerAuth() 
   @Post('me')
   getMe(@Req() req) {
     return req.user;

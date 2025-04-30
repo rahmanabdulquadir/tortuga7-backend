@@ -1,0 +1,425 @@
+[
+    {
+      "id": "07d3c555-9e08-4182-a012-2b00a2a9757c",
+      "title": "GPU rental",
+      "description": "High-performance GPU servers for AI training and inference tasks.",
+      "createdAt": "2025-04-29T10:12:04.081Z",
+      "updatedAt": "2025-04-29T10:12:04.081Z",
+      "products": []
+    },
+    {
+      "id": "78e40c1e-e88c-42be-82d8-ab4db1ae958a",
+      "title": "Custom Server",
+      "description": "Custom server for making server custom",
+      "createdAt": "2025-04-29T10:54:27.533Z",
+      "updatedAt": "2025-04-29T10:54:27.533Z",
+      "products": []
+    },
+    {
+      "id": "d5eba1df-e6d4-46f6-bc86-035652a9e05e",
+      "title": "Enterprise Storage",
+      "description": "Enterprise storage service for large scalable storage",
+      "createdAt": "2025-04-29T11:10:11.211Z",
+      "updatedAt": "2025-04-29T11:10:11.211Z",
+      "products": [
+        {
+          "id": "c9f7a683-bbce-4ae2-bbd5-e19d8d6c7cc2",
+          "productName": "Enterprise Storage Product 3",
+          "productModel": "HPE Alletra 6000",
+          "brandName": "AMD",
+          "slug": "enterprisestorage-hpe-alletra-6000",
+          "description": "The HPE Alletra 6000 delivers fast, reliable, and intelligent storage for critical applications and hybrid cloud environments.",
+          "filters": [
+            {
+              "name": "cpuType",
+              "value": "Intel® Xeon® 6700/6500 series"
+            },
+            {
+              "name": "generation",
+              "value": 6
+            },
+            {
+              "name": "memorySlots",
+              "value": 16
+            },
+            {
+              "name": "totalPower",
+              "value": "1000w"
+            }
+          ],
+          "keyApplications": [
+            "Transactional Databases",
+            "ERP Systems",
+            "Virtual Desktop Infrastructure (VDI)",
+            "Hybrid Cloud Deployments"
+          ],
+          "keyFeatures": [
+            "All-NVMe Flash Storage",
+            "AI-powered predictive analytics with HPE InfoSight",
+            "99.9999% availability guarantee",
+            "Integrated data protection and replication",
+            "Multi-cloud data mobility"
+          ],
+          "images": [
+            "https://example.com/images/hpe-alletra6000-front.jpg",
+            "https://example.com/images/hpe-alletra6000-side.jpg",
+            "https://example.com/images/hpe-alletra6000-back.jpg"
+          ],
+          "price": 28999,
+          "available": true,
+          "serviceId": "d5eba1df-e6d4-46f6-bc86-035652a9e05e",
+          "createdAt": "2025-04-29T11:11:40.426Z",
+          "updatedAt": "2025-04-30T04:06:13.915Z",
+          "specs": [
+            {
+              "id": "036e6656-1c5b-4af4-b4f9-89c8530409fe",
+              "title": "Product SKUs",
+              "description": "Detailed specs for the Gaming PC X1",
+              "data": [
+                {
+                  "SuperServer": "SSG-542B-E1CR60"
+                }
+              ],
+              "productId": "c9f7a683-bbce-4ae2-bbd5-e19d8d6c7cc2",
+              "createdAt": "2025-04-30T03:20:50.901Z",
+              "updatedAt": "2025-04-30T03:20:50.901Z"
+            },
+            {
+              "id": "84711581-6f9e-47f2-9841-734f67d82b61",
+              "title": "Motherboard",
+              "description": "Detailed specs",
+              "data": [
+                {
+                  "Super": "X14SBSC"
+                }
+              ],
+              "productId": "c9f7a683-bbce-4ae2-bbd5-e19d8d6c7cc2",
+              "createdAt": "2025-04-30T03:22:00.261Z",
+              "updatedAt": "2025-04-30T03:22:00.261Z"
+            },
+            {
+              "id": "5f318c01-95ac-4a02-8e4d-ca05eddc0c81",
+              "title": "Processor",
+              "description": "Detailed specs",
+              "data": [
+                {
+                  "CPU": "Single Socket E2 (LGA-4710)Intel® Xeon® 6700/6500 series processors with P-cores or 6700 series processors with E-cores"
+                },
+                {
+                  "Core Count": "Up to 144C/144T; Up to 108MB Cache"
+                },
+                {
+                  "Note": "Supports up to 350W TDP CPUs (Air Cooled)"
+                }
+              ],
+              "productId": "c9f7a683-bbce-4ae2-bbd5-e19d8d6c7cc2",
+              "createdAt": "2025-04-30T03:27:35.603Z",
+              "updatedAt": "2025-04-30T03:27:35.603Z"
+            },
+            {
+              "id": "73c4ace6-46d0-4538-b238-cb425a6fb517",
+              "title": "System Memory",
+              "description": "Detailed specs",
+              "data": [
+                {
+                  "Memory": "Slot Count: 16 DIMM slots Max Memory (1DPC): Up to 2TB 6400MT/s ECC DDR5 RDIMM Max Memory (2DPC): Up to 2TB 5200MT/s ECC DDR5 RDIMM"
+                },
+                {
+                  "Memory Voltage": "1.1V"
+                }
+              ],
+              "productId": "c9f7a683-bbce-4ae2-bbd5-e19d8d6c7cc2",
+              "createdAt": "2025-04-30T03:29:07.428Z",
+              "updatedAt": "2025-04-30T03:29:07.428Z"
+            },
+            {
+              "id": "ce3341d9-f005-41a9-b0da-112270d97e85",
+              "title": "On-Board Devices",
+              "description": "Detailed specs",
+              "data": [
+                {
+                  "NVMe": "NVMe; RAID 0/1 support"
+                },
+                {
+                  "Chipset": "System on Chip"
+                }
+              ],
+              "productId": "c9f7a683-bbce-4ae2-bbd5-e19d8d6c7cc2",
+              "createdAt": "2025-04-30T03:30:35.103Z",
+              "updatedAt": "2025-04-30T03:30:35.103Z"
+            },
+            {
+              "id": "bc726a38-cdcf-45f5-837e-28ef271a98ac",
+              "title": "Input / Output",
+              "description": "Detailed specs",
+              "data": [
+                {
+                  "LAN": "1 RJ45 1 GbE Dedicated BMC LAN port"
+                }
+              ],
+              "productId": "c9f7a683-bbce-4ae2-bbd5-e19d8d6c7cc2",
+              "createdAt": "2025-04-30T03:31:21.913Z",
+              "updatedAt": "2025-04-30T03:31:21.913Z"
+            },
+            {
+              "id": "ebb11bdc-da8a-4aa8-84b8-87493819bccd",
+              "title": "Chassis",
+              "description": "Detailed specs",
+              "data": [
+                {
+                  "Form Factor": "4U Rackmount"
+                },
+                {
+                  "Model": "CSE-947STS-R2K05P"
+                }
+              ],
+              "productId": "c9f7a683-bbce-4ae2-bbd5-e19d8d6c7cc2",
+              "createdAt": "2025-04-30T03:32:31.458Z",
+              "updatedAt": "2025-04-30T03:32:31.458Z"
+            },
+            {
+              "id": "4f3f4a36-eb76-4021-883b-e649a295c7fd",
+              "title": "Dimensions and Weight",
+              "description": "Detailed specs",
+              "data": [
+                {
+                  "Height": "6.96 (177 mm)"
+                },
+                {
+                  "Width": "17.6 (447 mm)"
+                },
+                {
+                  "Depth": "32 (813 mm)"
+                },
+                {
+                  "Weight": "Gross Weight: 170 lbs (77.11 kg) Net Weight: 107 lbs (48.53 kg)"
+                },
+                {
+                  "Palletized Packing (W x H x L)": "35.82 (805 mm) x 29.92 (755 mm) x 53.15 (1135 mm)"
+                },
+                {
+                  "Model": "CSE-947STS-R2K05P"
+                }
+              ],
+              "productId": "c9f7a683-bbce-4ae2-bbd5-e19d8d6c7cc2",
+              "createdAt": "2025-04-30T03:37:01.016Z",
+              "updatedAt": "2025-04-30T03:37:01.016Z"
+            },
+            {
+              "id": "b6f5bf0e-0901-43e5-8f85-db5a953734e2",
+              "title": "Expansion Slots",
+              "description": "Detailed specs",
+              "data": [
+                {
+                  "PCI-Express (PCIe) Configuration": "Default 1 PCIe 5.0 x8 (in x8) HHHL slot 3 PCIe 5.0 x16 (in x16) HHHL slots"
+                },
+                {
+                  "M.2": "2 M.2 PCIe 4.0 x2 NVMe slots (M-key 2280/22110)"
+                }
+              ],
+              "productId": "c9f7a683-bbce-4ae2-bbd5-e19d8d6c7cc2",
+              "createdAt": "2025-04-30T03:38:51.544Z",
+              "updatedAt": "2025-04-30T03:38:51.544Z"
+            },
+            {
+              "id": "8c0bf1d4-f8d0-44b3-b472-7dd89f3ff323",
+              "title": "Power Supply",
+              "description": "Detailed specs",
+              "data": [
+                {
+                  "Power": "1000w"
+                }
+              ],
+              "productId": "c9f7a683-bbce-4ae2-bbd5-e19d8d6c7cc2",
+              "createdAt": "2025-04-30T03:46:09.228Z",
+              "updatedAt": "2025-04-30T03:46:09.228Z"
+            }
+          ]
+        },
+        {
+          "id": "9020b27a-8e13-4f7c-b398-bae113e69a03",
+          "productName": "Enterprise Flash Storage 1",
+          "productModel": "Micron 9400 Pro",
+          "brandName": "Micron",
+          "slug": "string",
+          "description": "enterprise-storage-micron-9400-pro",
+          "filters": [
+            {
+              "name": "cpuType",
+              "value": "Intel® Xeon® 14th Gen (Emerald Rapids)"
+            },
+            {
+              "name": "generation",
+              "value": 14
+            },
+            {
+              "name": "memorySlots",
+              "value": 24
+            },
+            {
+              "name": "totalPower",
+              "value": "1200w"
+            },
+            {
+              "name": "storageType",
+              "value": "NVMe SSD"
+            }
+          ],
+          "keyApplications": [
+            "AI/ML Workloads",
+            "Real-Time Analytics",
+            "High-Frequency Trading",
+            "Hyperscale Cloud Storage",
+            "4K/8K Media Processing"
+          ],
+          "keyFeatures": [
+            "7.68TB NVMe SSDs with 3D NAND",
+            "14th Gen Intel Xeon Scalable Processors",
+            "PCIe 5.0 Support",
+            "99.9999% Availability SLA",
+            "CXL 2.0 Memory Expansion",
+            "Cyber-Resilient Encryption"
+          ],
+          "images": [
+            "https://i.nextmedia.com.au/Utils/ImageResizer.ashxn=http%3a%2f%2fi.nextmedia.com.au%2fNews%2f20110824050608_screen-capture-6.png&h=420&w=748&c=0&s=0",
+            "https://www.bisinfotech.com/wp-content/uploads/2017/02/Hewlett-Packard-Enterprise.jpg",
+            "https://blog.wei.com/hs-fs/hubfs/blog.jpg?width=300&name=blog.jpg"
+          ],
+          "price": 45000,
+          "available": true,
+          "serviceId": "d5eba1df-e6d4-46f6-bc86-035652a9e05e",
+          "createdAt": "2025-04-30T04:35:20.782Z",
+          "updatedAt": "2025-04-30T04:35:20.782Z",
+          "specs": [
+            {
+              "id": "29ab9c93-c7c3-4d36-82b7-051ef4e5e4e6",
+              "title": "Product SKUs",
+              "description": "Micron 9400 Pro Series",
+              "data": [
+                {
+                  "Base Model": "MT-9400P-7680"
+                },
+                {
+                  "High-Capacity Model": "MT-9400P-15360"
+                }
+              ],
+              "productId": "9020b27a-8e13-4f7c-b398-bae113e69a03",
+              "createdAt": "2025-04-30T04:37:10.865Z",
+              "updatedAt": "2025-04-30T04:37:10.865Z"
+            },
+            {
+              "id": "544f44b7-f48f-43a8-b5a4-84113bea7b03",
+              "title": "Processor",
+              "description": "14th Gen Intel Xeon",
+              "data": [
+                {
+                  "CPU": "Dual Socket LGA-4677 (Intel Emerald Rapids)"
+                },
+                {
+                  "Core Count": "Up to 64C/128T per socket"
+                },
+                {
+                  "TDP": "Up to 400W (Liquid Cooling Supported)"
+                }
+              ],
+              "productId": "9020b27a-8e13-4f7c-b398-bae113e69a03",
+              "createdAt": "2025-04-30T04:37:32.611Z",
+              "updatedAt": "2025-04-30T04:37:32.611Z"
+            },
+            {
+              "id": "70189f26-7b9f-4fa8-89f5-ad1c82acfd20",
+              "title": "Memory",
+              "description": "DDR5 with CXL Support",
+              "data": [
+                {
+                  "Slots": "24 DIMM slots (12 per CPU)"
+                },
+                {
+                  "Max Capacity": "6TB DDR5-6400"
+                },
+                {
+                  "CXL": "4 CXL 2.0 Expansion Slots"
+                }
+              ],
+              "productId": "9020b27a-8e13-4f7c-b398-bae113e69a03",
+              "createdAt": "2025-04-30T04:37:48.355Z",
+              "updatedAt": "2025-04-30T04:37:48.355Z"
+            },
+            {
+              "id": "6e7a713b-37ed-4bdb-8ccd-b5c33d90c1a1",
+              "title": "Storage",
+              "description": "NVMe Flash Array",
+              "data": [
+                {
+                  "Raw Capacity": "Up to 1.5PB (96 x 15.36TB NVMe)"
+                },
+                {
+                  "Interface": "PCIe 5.0 x4 per drive"
+                },
+                {
+                  "Endurance": "10 DWPD (Drive Writes Per Day)"
+                }
+              ],
+              "productId": "9020b27a-8e13-4f7c-b398-bae113e69a03",
+              "createdAt": "2025-04-30T04:38:04.929Z",
+              "updatedAt": "2025-04-30T04:38:04.929Z"
+            },
+            {
+              "id": "6233c305-634b-4b47-9ae9-c57934e15cb4",
+              "title": "Power & Cooling",
+              "description": "High-Efficiency Design",
+              "data": [
+                {
+                  "PSUs": "4 x 1200W (N+1 Redundant)"
+                },
+                {
+                  "Cooling": "N+1 Redundant Fans with Liquid Cooling Option"
+                },
+                {
+                  "Efficiency": "80+ Titanium Certified"
+                }
+              ],
+              "productId": "9020b27a-8e13-4f7c-b398-bae113e69a03",
+              "createdAt": "2025-04-30T04:38:14.231Z",
+              "updatedAt": "2025-04-30T04:38:14.231Z"
+            },
+            {
+              "id": "dcc26905-4eaa-496c-835d-82b822620cf3",
+              "title": "Networking",
+              "description": "High-Speed Connectivity",
+              "data": [
+                {
+                  "Ports": "8 x 100GbE (NVIDIA ConnectX-7)"
+                },
+                {
+                  "Protocols": "NVMe-oF/TCP, iSCSI, Fibre Channel"
+                }
+              ],
+              "productId": "9020b27a-8e13-4f7c-b398-bae113e69a03",
+              "createdAt": "2025-04-30T04:38:27.256Z",
+              "updatedAt": "2025-04-30T04:38:27.256Z"
+            },
+            {
+              "id": "910e0f14-ceb7-4336-91b0-7ff8574a1765",
+              "title": "Physical Specifications",
+              "description": "Rackmount Design",
+              "data": [
+                {
+                  "Form Factor": "4U Rackmount"
+                },
+                {
+                  "Weight": "220 lbs (99.8 kg) fully loaded"
+                },
+                {
+                  "Dimensions": "17.5 x 7 x 32 in (445 x 178 x 813 mm)"
+                }
+              ],
+              "productId": "9020b27a-8e13-4f7c-b398-bae113e69a03",
+              "createdAt": "2025-04-30T04:38:38.407Z",
+              "updatedAt": "2025-04-30T04:38:38.407Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]

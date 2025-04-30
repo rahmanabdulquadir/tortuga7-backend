@@ -23,6 +23,7 @@ import { ProductModule } from './main/product/product.module';
     PrismaModule, 
     MailModule, 
     ProductModule, 
+    UsersModule,
     ServiceModule, 
     BlogModule, 
     ContactModule, 
