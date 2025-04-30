@@ -37,36 +37,42 @@ export class ProductService {
     });
   }
 
-//   async findAllFiltered(query: {
-//     serviceId?: string;
-//     filters?: Record<string, string>;
-//   }) {
-//     const { serviceId, filters } = query;
-
-//     const products = await this.prisma.product.findMany({
-//       where: {
-//         ...(serviceId && { serviceId }),
-
-//         specs: {
-//           some: {
-//             data: {
-//               path: [],
-//               array_contains: buildSpecFilterArray(filters),
-//             },
-//           },
-//         },
-//       },
-//       include: {
-//         specs: true,
-//       },
-//     });
-
-//     return {
-//       success: true,
-//       count: products.length,
-//       data: products,
-//     };
-//   }
+  async findAllPaginated(page?: number, limit?: number) {
+    // If either page or limit is missing, return all products
+    if (!page || !limit) {
+      const products = await this.prisma.product.findMany({
+        orderBy: { createdAt: 'desc' },
+        include: { service: true, specs: true },
+      });
+  
+      return {
+        data: products,
+        total: products.length,
+        currentPage: null,
+        totalPages: null,
+      };
+    }
+  
+    const skip = (page - 1) * limit;
+  
+    const [products, total] = await Promise.all([
+      this.prisma.product.findMany({
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+        include: { service: true, specs: true },
+      }),
+      this.prisma.product.count(),
+    ]);
+  
+    return {
+      data: products,
+      total,
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
+  
 
   async findOne(id: string) {
     return this.prisma.product.findUnique({

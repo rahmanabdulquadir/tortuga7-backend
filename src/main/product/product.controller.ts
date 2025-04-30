@@ -12,6 +12,7 @@ import {
   import { ProductService } from './product.service';
   import { CreateProductDto } from './create-product.dto';
 import { UpdateProductDto } from './update-product.dto';
+import { ApiQuery } from '@nestjs/swagger';
   
   @Controller('products')
   export class ProductController {
@@ -22,10 +23,23 @@ import { UpdateProductDto } from './update-product.dto';
       return this.productService.create(dto);
     }
 
+    // @Get()
+    // findAll() {
+    //   return this.productService.findAll();
+    // }
+
     @Get()
-    findAll() {
-      return this.productService.findAll();
+    @ApiQuery({ name: 'page', required: false, type: Number })
+    @ApiQuery({ name: 'limit', required: false, type: Number })
+    findAll(
+      @Query('page') page?: string,
+      @Query('limit') limit?: string,
+    ) {
+      const pageNumber = page ? parseInt(page) : undefined;
+      const pageSize = limit ? parseInt(limit) : undefined;
+      return this.productService.findAllPaginated(pageNumber, pageSize);
     }
+    
   
   
     // @Get()
