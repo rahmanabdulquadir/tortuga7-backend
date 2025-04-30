@@ -60,6 +60,7 @@ model Product {
   filters         Json?
   keyApplications String[]
   keyFeatures     String[]
+  image           String?  // ✅ make sure this exists
   images          String[]
   price           Float
   available       Boolean

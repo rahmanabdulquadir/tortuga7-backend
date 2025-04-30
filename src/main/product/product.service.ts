@@ -20,7 +20,7 @@ export class ProductService {
 
   async create(dto: CreateProductDto) {
     const { serviceId, ...rest } = dto;
-
+    console.log(rest)
     return this.prisma.product.create({
       data: {
         ...rest,
