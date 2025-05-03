@@ -74,6 +74,51 @@ export class ProductService {
   }
   
 
+  async findAllPaginatedWithFilters(page?: number, limit?: number, filters?: Record<string, string>) {
+    const where: any = {};
+  
+    // Apply dynamic filters
+    for (const [key, value] of Object.entries(filters || {})) {
+      where[key] = value;
+    }
+  
+    if (!page || !limit) {
+      const products = await this.prisma.product.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+        include: { service: true, specs: true },
+      });
+  
+      return {
+        data: products,
+        total: products.length,
+        currentPage: null,
+        totalPages: null,
+      };
+    }
+  
+    const skip = (page - 1) * limit;
+  
+    const [products, total] = await Promise.all([
+      this.prisma.product.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+        include: { service: true, specs: true },
+      }),
+      this.prisma.product.count({ where }),
+    ]);
+  
+    return {
+      data: products,
+      total,
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
+  
+
   async findOne(id: string) {
     return this.prisma.product.findUnique({
       where: { id },

@@ -20,6 +20,7 @@ import { ApiQuery, ApiConsumes, ApiBody } from '@nestjs/swagger';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './create-product.dto';
 import { UpdateProductDto } from './update-product.dto';
+import { QueryProductsDto } from './query-products.dto';
 
 @Controller('products')
 export class ProductController {
@@ -51,13 +52,23 @@ async create(
 }
 
 
+  // @Get()
+  // @ApiQuery({ name: 'page', required: false, type: Number })
+  // @ApiQuery({ name: 'limit', required: false, type: Number })
+  // findAll(@Query('page') page?: string, @Query('limit') limit?: string) {
+  //   const pageNumber = page ? parseInt(page) : undefined;
+  //   const pageSize = limit ? parseInt(limit) : undefined;
+  //   return this.productService.findAllPaginated(pageNumber, pageSize);
+  // }
+
   @Get()
-  @ApiQuery({ name: 'page', required: false, type: Number })
-  @ApiQuery({ name: 'limit', required: false, type: Number })
-  findAll(@Query('page') page?: string, @Query('limit') limit?: string) {
-    const pageNumber = page ? parseInt(page) : undefined;
-    const pageSize = limit ? parseInt(limit) : undefined;
-    return this.productService.findAllPaginated(pageNumber, pageSize);
+  // @ApiQuery({ name: 'filters', type: QueryProductsDto })
+  async findAll(@Query() query: QueryProductsDto) {
+    const { page, limit, ...filters } = query;
+    const pageNumber = page ? parseInt(page.toString()) : undefined;
+    const pageSize = limit ? parseInt(limit.toString()) : undefined;
+  
+    return this.productService.findAllPaginatedWithFilters(pageNumber, pageSize, filters);
   }
 
   @Get('/search-by-spec')

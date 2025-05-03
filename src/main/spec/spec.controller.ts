@@ -40,11 +40,8 @@ export class SpecController {
     @Param('id') id: string,
     @Body() body: Record<string, string>,
   ) {
-    return this.specService.addDataToSpec(id, body); // ✅ directly pass the dynamic object
+    return this.specService.addDataToSpec(id, body);
   }
-  
-  
-
   
 
   @Patch(':id')
