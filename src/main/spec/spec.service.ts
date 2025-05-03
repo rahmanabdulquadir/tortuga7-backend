@@ -2,6 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateSpecDto } from './create-spec.dto';
 import { UpdateSpecDto } from './update-spec.dto';
+import { Prisma } from '@prisma/client';
 
 
 @Injectable()
@@ -10,10 +11,12 @@ export class SpecService {
 
   async create(createSpecDto: CreateSpecDto) {
     const { productId, ...rest } = createSpecDto;
+    
   
     const spec = await this.prisma.spec.create({
       data: {
         ...rest,
+        data: rest.data as unknown as Prisma.InputJsonValue,
         ...(productId && {
           product: {
             connect: { id: productId },
@@ -66,10 +69,18 @@ export class SpecService {
   }
 
   async update(id: string, updateSpecDto: UpdateSpecDto) {
+    const { data, ...rest } = updateSpecDto;
+  
     const spec = await this.prisma.spec.update({
       where: { id },
-      data: updateSpecDto,
+      data: {
+        ...rest,
+        ...(data && {
+          data: data as unknown as Prisma.InputJsonValue,
+        }),
+      },
     });
+  
     return { success: true, message: 'Spec updated successfully', data: spec };
   }
 
