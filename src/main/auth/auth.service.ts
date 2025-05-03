@@ -52,7 +52,6 @@ export class AuthService {
       expiresIn: this.configService.get<string>('JWT_EXPIRES_IN'),
     });
 
-    console.log(accessToken)
     return { access_token: accessToken, user: user };
   }
 
