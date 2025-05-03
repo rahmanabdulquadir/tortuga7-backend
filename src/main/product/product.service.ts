@@ -74,13 +74,24 @@ export class ProductService {
   }
   
 
-  async findAllPaginatedWithFilters(page?: number, limit?: number, filters?: Record<string, string>) {
-    const where: any = {};
+  async findAllPaginatedWithFilters(
+    page?: number,
+    limit?: number,
+    filters?: Record<string, string>,
+  ) {
+    const filterConditions = Object.entries(filters || {})
+      .filter(([_, value]) => value !== undefined && value !== null && value !== '')
+      .map(([key, value]) => ({
+        filters: {
+          path: ["$[*]"],
+          array_contains: {
+            name: key,
+            value: value,
+          },
+        },
+      }));
   
-    // Apply dynamic filters
-    for (const [key, value] of Object.entries(filters || {})) {
-      where[key] = value;
-    }
+    const where = filterConditions.length ? { AND: filterConditions } : {};
   
     if (!page || !limit) {
       const products = await this.prisma.product.findMany({
@@ -117,7 +128,6 @@ export class ProductService {
       totalPages: Math.ceil(total / limit),
     };
   }
-  
 
   async findOne(id: string) {
     return this.prisma.product.findUnique({
