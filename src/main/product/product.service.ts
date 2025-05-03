@@ -37,7 +37,7 @@ export class ProductService {
     });
   }
 
-  async findAllPaginated(page?: number, limit?: number) {
+  async findAllPaginated(page?: number, limit?: number, filters?: { productName?: string; productModel?: string; brandName?: string; generation?: string; cpuType?: string; }) {
     // If either page or limit is missing, return all products
     if (!page || !limit) {
       const products = await this.prisma.product.findMany({

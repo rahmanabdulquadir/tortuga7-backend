@@ -52,14 +52,19 @@ async create(
 }
 
 
-  // @Get()
-  // @ApiQuery({ name: 'page', required: false, type: Number })
-  // @ApiQuery({ name: 'limit', required: false, type: Number })
-  // findAll(@Query('page') page?: string, @Query('limit') limit?: string) {
-  //   const pageNumber = page ? parseInt(page) : undefined;
-  //   const pageSize = limit ? parseInt(limit) : undefined;
-  //   return this.productService.findAllPaginated(pageNumber, pageSize);
-  // }
+// @Get()
+// @ApiQuery({ name: 'page', required: false, type: Number })
+// @ApiQuery({ name: 'limit', required: false, type: Number })
+// @ApiQuery({ name: 'brandName', required: false, type: String })
+// @ApiQuery({ name: 'generation', required: false, type: String })
+// @ApiQuery({ name: 'cpuType', required: false, type: String })
+// findAll(@Query() query: QueryProductsDto) {
+//   const { page, limit, ...filters } = query;
+//   const pageNumber = page ? parseInt(page) : undefined;
+//   const pageSize = limit ? parseInt(limit) : undefined;
+
+//   return this.productService.findAllPaginated(pageNumber, pageSize, filters);
+// }
 
   @Get()
   // @ApiQuery({ name: 'filters', type: QueryProductsDto })
