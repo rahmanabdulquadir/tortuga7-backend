@@ -2,8 +2,9 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { SpecService } from './spec.service';
 import { CreateSpecDto } from './create-spec.dto';
 import { UpdateSpecDto } from './update-spec.dto';
-import { AddSpecDataDto } from './add-spec-data.dto';
+// import { AddSpecDataDto } from './add-spec-data.dto';
 import { ApiBody, ApiParam } from '@nestjs/swagger';
+import { AddSpecDataDto } from './add-spec-data.dto';
 
 
 @Controller('specs')
@@ -37,10 +38,13 @@ export class SpecController {
   })
   async addDataToSpec(
     @Param('id') id: string,
-    @Body() body: AddSpecDataDto,
+    @Body() body: Record<string, string>,
   ) {
-    return this.specService.addDataToSpec(id, body);
+    return this.specService.addDataToSpec(id, body); // ✅ directly pass the dynamic object
   }
+  
+  
+
   
 
   @Patch(':id')

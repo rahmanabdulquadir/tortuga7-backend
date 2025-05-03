@@ -3,30 +3,20 @@ import {
   IsArray,
   IsOptional,
   IsString,
-  ValidateNested,
+  IsObject,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
-class SpecItem {
-  @ApiProperty({ example: 'Power' })
-  @IsString()
-  key: string;
-
-  @ApiProperty({ example: '200W' })
-  @IsString()
-  value: string;
-}
-
 export class CreateSpecDto {
   @ApiProperty({
-    example: 'Technical Specifications',
+    example: 'Dimension',
     description: 'Title of the spec group',
   })
   @IsString()
   title: string;
 
   @ApiPropertyOptional({
-    example: 'This section includes all the technical details about the product.',
+    example: 'This section includes all the technical details.',
     description: 'Optional description of the spec group',
   })
   @IsOptional()
@@ -34,21 +24,20 @@ export class CreateSpecDto {
   description?: string;
 
   @ApiProperty({
-    description: 'An array of key-value pair objects representing specifications',
+    description: 'Array of key-value specification objects',
+    type: [Object],
     example: [
-      { key: 'Power', value: '200W' },
-      { key: 'Voltage', value: '220V' },
+      { Height: '180cm' },
+      { Width: '80cm' },
     ],
-    type: [SpecItem],
   })
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => SpecItem)
-  data: SpecItem[];
+  @IsArray() // ✅ This is the key
+  @Type(() => Object) // ✅ Forces proper transformation of each item
+  data: Record<string, string>[];
 
   @ApiPropertyOptional({
-    example: 'c40c768b-3a1d-4b90-8b2f-fdb8a1fbd123',
-    description: 'Optional reference to a product by its ID',
+    example: 'product-uuid',
+    description: 'Optional product ID',
   })
   @IsOptional()
   @IsString()

@@ -28,6 +28,8 @@ export class SpecService {
     return { success: true, message: 'Spec created successfully', data: spec };
   }
 
+  
+
   async findAll() {
     const specs = await this.prisma.spec.findMany();
     return { success: true, data: specs };
@@ -41,23 +43,20 @@ export class SpecService {
   async addDataToSpec(id: string, newItem: Record<string, string>) {
     const spec = await this.prisma.spec.findUnique({ where: { id } });
   
-    if (!spec || !spec.data || typeof newItem !== 'object') {
-      throw new BadRequestException('Invalid new item');
+    if (!spec || !Array.isArray(spec.data) || typeof newItem !== 'object') {
+      throw new BadRequestException('Invalid spec or new item');
     }
   
     const cleanedItem = Object.fromEntries(
       Object.entries(newItem).filter(([k, v]) => k && v)
     );
   
-    const updatedData = [
-      ...(spec.data as Record<string, string>[]),
-      cleanedItem,
-    ];
+    const updatedData = [...spec.data, cleanedItem];
   
     const updatedSpec = await this.prisma.spec.update({
       where: { id },
       data: {
-        data: updatedData,
+        data: updatedData as unknown as Prisma.InputJsonValue,
       },
     });
   
@@ -67,6 +66,7 @@ export class SpecService {
       data: updatedSpec,
     };
   }
+  
 
   async update(id: string, updateSpecDto: UpdateSpecDto) {
     const { data, ...rest } = updateSpecDto;
