@@ -55,20 +55,20 @@ model Product {
   productName     String
   productModel    String
   brandName       String
-  slug            String    @unique
+  slug            String   
   description     String
   filters         Json?
   keyApplications String[]
   keyFeatures     String[]
-  image           String?  // ✅ make sure this exists
+  image           String?  
   images          String[]
   price           Float
   available       Boolean
 
-  serviceId       String?                      // <--- Foreign key to Service
+  serviceId       String?                      
   service         Service?   @relation(fields: [serviceId], references: [id])
 
-  specs           Spec[]                   // <--- Product has many Specs
+  specs           Spec[]                   
 
   createdAt       DateTime   @default(now())
   updatedAt       DateTime   @updatedAt
@@ -80,7 +80,7 @@ model Spec {
   description String?
   data        Json
 
-  productId   String?                      // <--- Foreign key to Product
+  productId   String?                      
   product     Product?   @relation(fields: [productId], references: [id])
 
   createdAt   DateTime   @default(now())

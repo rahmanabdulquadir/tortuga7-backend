@@ -45,15 +45,19 @@ export class ProductController {
     @UploadedFiles() files: Express.Multer.File[],
     @Body() dto: CreateProductDto,
   ) {
-    const imageUrls = files.map((file) => `/uploads/products/${file.filename}`);
-    // Ensure filters is parsed if sent as a string
+    // console.log('Raw Body:', dto);
+
     if (dto.filters && typeof dto.filters === 'string') {
       try {
-        dto.filters = JSON.parse(dto.filters);
+        const parsed = JSON.parse(dto.filters);
+        dto.filters = Array.isArray(parsed) ? parsed : [parsed];
       } catch (error) {
-        throw new Error('Invalid JSON format for filters');
+        throw new Error(`Invalid JSON format for filters: ${error.message}`);
       }
     }
+    // console.log('Transformed DTO:', dto);
+    const imageUrls = files.map((file) => `/uploads/products/${file.filename}`);
+    // console.log('DTO before service:', { ...dto, images: imageUrls });
     return this.productService.create({ ...dto, images: imageUrls });
   }
   @Get()

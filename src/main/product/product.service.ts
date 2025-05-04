@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateProductDto } from './create-product.dto';
 import { Prisma, Product } from '@prisma/client'; // at the top
@@ -19,21 +19,39 @@ export class ProductService {
   constructor(private prisma: PrismaService) {}
 
   async create(dto: CreateProductDto) {
-    const { serviceId, filters, ...rest } = dto;
+    const { serviceId, filters, slug, ...rest } = dto;
     console.log('DTO:', dto);
+  
+    // Validate filters
+    if (filters) {
+      if (!filters.length) {
+        throw new BadRequestException('Filters array must not be empty if provided');
+      }
+      if (filters.some((filter) => !filter.name || !filter.value)) {
+        throw new BadRequestException('All filters must have non-empty name and value');
+      }
+    }
   
     // Convert FilterDto[] to plain JSON array
     const plainFilters: Prisma.InputJsonValue | undefined = filters
       ? filters.map(({ name, value }) => ({ name, value }))
       : undefined;
   
-    return this.prisma.product.create({
-      data: {
-        ...rest,
-        filters: plainFilters,
-        service: serviceId ? { connect: { id: serviceId } } : undefined,
-      },
-    });
+    try {
+      return await this.prisma.product.create({
+        data: {
+          ...rest,
+          slug,
+          filters: plainFilters,
+          service: serviceId ? { connect: { id: serviceId } } : undefined,
+        },
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+        throw new BadRequestException(`A product with slug "${slug}" already exists`);
+      }
+      throw error;
+    }
   }
 
   async findAll() {
