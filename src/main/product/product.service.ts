@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateProductDto } from './create-product.dto';
-import { Product } from '@prisma/client'; // at the top
+import { Prisma, Product } from '@prisma/client'; // at the top
 import { UpdateProductDto } from './update-product.dto';
 
 
@@ -19,14 +19,19 @@ export class ProductService {
   constructor(private prisma: PrismaService) {}
 
   async create(dto: CreateProductDto) {
-    const { serviceId, ...rest } = dto;
-    console.log(rest)
+    const { serviceId, filters, ...rest } = dto;
+    console.log('DTO:', dto);
+  
+    // Convert FilterDto[] to plain JSON array
+    const plainFilters: Prisma.InputJsonValue | undefined = filters
+      ? filters.map(({ name, value }) => ({ name, value }))
+      : undefined;
+  
     return this.prisma.product.create({
       data: {
         ...rest,
-        service: {
-          connect: { id: serviceId },
-        },
+        filters: plainFilters,
+        service: serviceId ? { connect: { id: serviceId } } : undefined,
       },
     });
   }
@@ -79,15 +84,14 @@ export class ProductService {
     limit?: number,
     filters?: Record<string, string>,
   ) {
-    // Build filter conditions for the JSON filters array
+
     const filterConditions = Object.entries(filters || {})
       .filter(([_, value]) => value !== undefined && value !== null && value !== '')
       .map(([key, value]) => ({
         name: key,
         value: !isNaN(Number(value)) && value.trim() !== '' ? Number(value) : value,
       }));
-  
-    // If no filters, use standard Prisma query
+
     if (!filterConditions.length) {
       if (!page || !limit) {
         const products = await this.prisma.product.findMany({
@@ -123,7 +127,6 @@ export class ProductService {
       };
     }
   
-    // Build raw SQL query for JSONB filtering
     const jsonConditions = filterConditions
       .map((_, index) => `"filters" @> $${index + 1}::jsonb`)
       .join(' AND ');
@@ -139,7 +142,7 @@ export class ProductService {
       ${page && limit ? `LIMIT $${filterConditions.length + 1} OFFSET $${filterConditions.length + 2}` : ''}
     `;
   
-    // Create JSONB parameters, converting numeric values to strings to match database
+
     const params = [
       ...filterConditions.map((condition) => {
         const formattedCondition = [{
@@ -151,26 +154,24 @@ export class ProductService {
       ...(page && limit ? [limit, (page - 1) * limit] : []),
     ];
   
-    console.log('Raw Query:', query);
-    console.log('Query Params:', params);
+    // console.log('Raw Query:', query);
+    // console.log('Query Params:', params);
   
-    // Debug: Log the filters column data to inspect its format
+  
     const debugFilters = await this.prisma.$queryRawUnsafe<
       { filters: any }[]
     >(`SELECT filters FROM "Product" WHERE "filters" IS NOT NULL LIMIT 5`);
     console.log('Sample filters data:', debugFilters);
   
-    // Execute raw query
     const results = await this.prisma.$queryRawUnsafe<
       (Product & { total: number })[]
     >(query, ...params);
   
-    // Process results
     const products = results.map((result) => ({
       ...result,
-      total: undefined, // Remove total from individual product
-      service: result.serviceId ? { id: result.serviceId } : null, // Mock service relation
-      specs: [], // Mock specs relation (adjust based on your schema)
+      total: undefined, 
+      service: result.serviceId ? { id: result.serviceId } : null, 
+      specs: [], 
     }));
   
     const total = results.length > 0 ? Number(results[0].total) : 0;
@@ -190,27 +191,27 @@ export class ProductService {
     });
   }
 
-  async update(id: string, dto: UpdateProductDto) {
-    const existingProduct = await this.prisma.product.findUnique({ where: { id } });
+  // async update(id: string, dto: UpdateProductDto) {
+  //   const existingProduct = await this.prisma.product.findUnique({ where: { id } });
   
-    if (!existingProduct) {
-      throw new NotFoundException('Product not found');
-    }
+  //   if (!existingProduct) {
+  //     throw new NotFoundException('Product not found');
+  //   }
   
-    const { serviceId, ...rest } = dto;
+  //   const { serviceId, ...rest } = dto;
   
-    return this.prisma.product.update({
-      where: { id },
-      data: {
-        ...rest,
-        ...(serviceId && {
-          service: {
-            connect: { id: serviceId },
-          },
-        }),
-      },
-    });
-  }
+  //   return this.prisma.product.update({
+  //     where: { id },
+  //     data: {
+  //       ...rest,
+  //       ...(serviceId && {
+  //         service: {
+  //           connect: { id: serviceId },
+  //         },
+  //       }),
+  //     },
+  //   });
+  // }
   
 
   async remove(id: string) {

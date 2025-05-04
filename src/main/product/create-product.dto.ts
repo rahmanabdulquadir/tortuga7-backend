@@ -11,6 +11,18 @@ import {
   ValidateNested,
 } from 'class-validator';
 
+class FilterDto {
+  @ApiProperty({ description: 'Filter name (e.g., memorySlots)' })
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @ApiProperty({ description: 'Filter value (e.g., 4, electronics)' })
+  @IsString()
+  @IsNotEmpty()
+  value: string;
+}
+
 export class CreateProductDto {
   @ApiProperty()
   @IsString()
@@ -37,6 +49,33 @@ export class CreateProductDto {
   @IsNotEmpty()
   description: string;
 
+  @ApiProperty({ type: [FilterDto], description: 'List of filters (e.g., [{ name: "memorySlots", value: "4" }])', required: false })
+  @IsOptional()
+  @IsArray({ message: 'filters must be an array' })
+  @ValidateNested({ each: true })
+  @Type(() => FilterDto)
+  @Transform(({ value }) => {
+    if (value === undefined || value === null) {
+      return undefined;
+    }
+    if (typeof value === 'string') {
+      try {
+        const parsed = JSON.parse(value);
+        if (!Array.isArray(parsed)) {
+          throw new Error('filters must be an array');
+        }
+        return parsed;
+      } catch (error) {
+        throw new Error(`Invalid JSON format for filters: ${error.message}`);
+      }
+    }
+    if (!Array.isArray(value)) {
+      throw new Error('filters must be an array');
+    }
+    return value;
+  })
+  filters?: FilterDto[];
+
   @ApiProperty({ type: [String], description: 'List of key applications' })
   @IsArray()
   @IsString({ each: true })
@@ -60,6 +99,7 @@ export class CreateProductDto {
       format: 'binary',
     },
     description: 'Multiple image files',
+    required: false,
   })
   @IsOptional()
   @IsArray()
@@ -75,7 +115,8 @@ export class CreateProductDto {
   @Type(() => Boolean)
   available: boolean;
 
-  @ApiProperty()
-  @IsUUID()
-  serviceId: string;
+  @ApiProperty({ description: 'UUID of the associated service', required: false })
+  @IsOptional()
+  @IsUUID('4', { message: 'serviceId must be a valid UUID' })
+  serviceId?: string;
 }

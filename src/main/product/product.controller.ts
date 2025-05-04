@@ -45,10 +45,17 @@ export class ProductController {
     @UploadedFiles() files: Express.Multer.File[],
     @Body() dto: CreateProductDto,
   ) {
-    const imageUrls = files.map(file => `/uploads/products/${file.filename}`);
+    const imageUrls = files.map((file) => `/uploads/products/${file.filename}`);
+    // Ensure filters is parsed if sent as a string
+    if (dto.filters && typeof dto.filters === 'string') {
+      try {
+        dto.filters = JSON.parse(dto.filters);
+      } catch (error) {
+        throw new Error('Invalid JSON format for filters');
+      }
+    }
     return this.productService.create({ ...dto, images: imageUrls });
   }
-
   @Get()
   @ApiQuery({ name: 'page', required: false })
   @ApiQuery({ name: 'limit', required: false })
@@ -74,10 +81,10 @@ export class ProductController {
     return this.productService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() dto: UpdateProductDto) {
-    return this.productService.update(id, dto);
-  }
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() dto: UpdateProductDto) {
+  //   return this.productService.update(id, dto);
+  // }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
