@@ -79,53 +79,107 @@ export class ProductService {
     limit?: number,
     filters?: Record<string, string>,
   ) {
+    // Build filter conditions for the JSON filters array
     const filterConditions = Object.entries(filters || {})
       .filter(([_, value]) => value !== undefined && value !== null && value !== '')
       .map(([key, value]) => ({
-        filters: {
-          path: ["$[*]"],
-          array_contains: {
-            name: key,
-            value: value,
-          },
-        },
+        name: key,
+        value: !isNaN(Number(value)) && value.trim() !== '' ? Number(value) : value,
       }));
   
-    const where = filterConditions.length ? { AND: filterConditions } : {};
+    // If no filters, use standard Prisma query
+    if (!filterConditions.length) {
+      if (!page || !limit) {
+        const products = await this.prisma.product.findMany({
+          orderBy: { createdAt: 'desc' },
+          include: { service: true, specs: true },
+        });
   
-    if (!page || !limit) {
-      const products = await this.prisma.product.findMany({
-        where,
-        orderBy: { createdAt: 'desc' },
-        include: { service: true, specs: true },
-      });
+        return {
+          data: products,
+          total: products.length,
+          currentPage: null,
+          totalPages: null,
+        };
+      }
+  
+      const skip = (page - 1) * limit;
+  
+      const [products, total] = await Promise.all([
+        this.prisma.product.findMany({
+          skip,
+          take: limit,
+          orderBy: { createdAt: 'desc' },
+          include: { service: true, specs: true },
+        }),
+        this.prisma.product.count(),
+      ]);
   
       return {
         data: products,
-        total: products.length,
-        currentPage: null,
-        totalPages: null,
+        total,
+        currentPage: page,
+        totalPages: Math.ceil(total / limit),
       };
     }
   
-    const skip = (page - 1) * limit;
+    // Build raw SQL query for JSONB filtering
+    const jsonConditions = filterConditions
+      .map((_, index) => `"filters" @> $${index + 1}::jsonb`)
+      .join(' AND ');
   
-    const [products, total] = await Promise.all([
-      this.prisma.product.findMany({
-        where,
-        skip,
-        take: limit,
-        orderBy: { createdAt: 'desc' },
-        include: { service: true, specs: true },
+    const query = `
+      SELECT *, 
+             (SELECT COUNT(*) 
+              FROM "Product" 
+              WHERE ${jsonConditions}) as total
+      FROM "Product"
+      WHERE ${jsonConditions}
+      ORDER BY "createdAt" DESC
+      ${page && limit ? `LIMIT $${filterConditions.length + 1} OFFSET $${filterConditions.length + 2}` : ''}
+    `;
+  
+    // Create JSONB parameters, converting numeric values to strings to match database
+    const params = [
+      ...filterConditions.map((condition) => {
+        const formattedCondition = [{
+          name: condition.name,
+          value: typeof condition.value === 'number' ? condition.value.toString() : condition.value,
+        }];
+        return JSON.stringify(formattedCondition);
       }),
-      this.prisma.product.count({ where }),
-    ]);
+      ...(page && limit ? [limit, (page - 1) * limit] : []),
+    ];
+  
+    console.log('Raw Query:', query);
+    console.log('Query Params:', params);
+  
+    // Debug: Log the filters column data to inspect its format
+    const debugFilters = await this.prisma.$queryRawUnsafe<
+      { filters: any }[]
+    >(`SELECT filters FROM "Product" WHERE "filters" IS NOT NULL LIMIT 5`);
+    console.log('Sample filters data:', debugFilters);
+  
+    // Execute raw query
+    const results = await this.prisma.$queryRawUnsafe<
+      (Product & { total: number })[]
+    >(query, ...params);
+  
+    // Process results
+    const products = results.map((result) => ({
+      ...result,
+      total: undefined, // Remove total from individual product
+      service: result.serviceId ? { id: result.serviceId } : null, // Mock service relation
+      specs: [], // Mock specs relation (adjust based on your schema)
+    }));
+  
+    const total = results.length > 0 ? Number(results[0].total) : 0;
   
     return {
       data: products,
       total,
-      currentPage: page,
-      totalPages: Math.ceil(total / limit),
+      currentPage: page || null,
+      totalPages: page && limit ? Math.ceil(total / limit) : null,
     };
   }
 
