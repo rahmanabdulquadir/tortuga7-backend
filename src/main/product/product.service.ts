@@ -3,6 +3,18 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateProductDto } from './create-product.dto';
 import { Prisma, Product } from '@prisma/client'; // at the top
 import { UpdateProductDto } from './update-product.dto';
+import { v2 as cloudinary } from 'cloudinary';
+import * as toStream from 'buffer-to-stream';
+import { Readable } from 'stream';
+
+
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key:    process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 
 
@@ -52,6 +64,27 @@ export class ProductService {
       }
       throw error;
     }
+  }
+
+  async uploadToCloudinary(file: Express.Multer.File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        {
+          folder: 'products', // Optional folder name in Cloudinary
+          resource_type: 'image',
+        },
+        (error, result) => {
+          if (error) return reject(error);
+          return resolve(result?.secure_url || '');
+        },
+      );
+
+      // Convert buffer to readable stream
+      const readable = new Readable();
+      readable.push(file.buffer);
+      readable.push(null);
+      readable.pipe(stream);
+    });
   }
 
   async findAll() {

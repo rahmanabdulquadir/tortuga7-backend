@@ -11,11 +11,10 @@ import {
   UploadedFiles,
   BadRequestException,
 } from '@nestjs/common';
-import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import * as multer from 'multer';
 import { extname } from 'path';
 import { ApiTags, ApiConsumes, ApiBody, ApiQuery } from '@nestjs/swagger';
-
 import { ProductService } from './product.service';
 import { CreateProductDto } from './create-product.dto';
 import { UpdateProductDto } from './update-product.dto';
@@ -29,14 +28,7 @@ export class ProductController {
   @Post()
   @UseInterceptors(
     FilesInterceptor('images', 10, {
-      storage: diskStorage({
-        destination: './uploads/products',
-        filename: (req, file, cb) => {
-          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-          const ext = extname(file.originalname);
-          cb(null, `product-${uniqueSuffix}${ext}`);
-        },
-      }),
+      storage: multer.memoryStorage(),
     }),
   )
   @ApiConsumes('multipart/form-data')
@@ -45,8 +37,6 @@ export class ProductController {
     @UploadedFiles() files: Express.Multer.File[],
     @Body() dto: CreateProductDto,
   ) {
-    // console.log('Raw Body:', dto);
-
     if (dto.filters && typeof dto.filters === 'string') {
       try {
         const parsed = JSON.parse(dto.filters);
@@ -55,9 +45,12 @@ export class ProductController {
         throw new Error(`Invalid JSON format for filters: ${error.message}`);
       }
     }
-    // console.log('Transformed DTO:', dto);
-    const imageUrls = files.map((file) => `/uploads/products/${file.filename}`);
-    // console.log('DTO before service:', { ...dto, images: imageUrls });
+  
+    const uploadPromises = files.map((file) =>
+      this.productService.uploadToCloudinary(file),
+    );
+    const imageUrls = await Promise.all(uploadPromises);
+  
     return this.productService.create({ ...dto, images: imageUrls });
   }
   @Get()
