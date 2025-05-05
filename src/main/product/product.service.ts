@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateProductDto } from './create-product.dto';
-import { Prisma, Product } from '@prisma/client'; // at the top
+import { Prisma, Product, Service, Spec } from '@prisma/client'; // at the top
 import { UpdateProductDto } from './update-product.dto';
 import { v2 as cloudinary } from 'cloudinary';
 import * as toStream from 'buffer-to-stream';
@@ -31,6 +31,7 @@ export class ProductService {
   constructor(private prisma: PrismaService) {}
 
   async create(dto: CreateProductDto) {
+    console.log(dto)
     const { serviceId, filters, slug, ...rest } = dto;
     console.log('DTO:', dto);
   
@@ -139,7 +140,11 @@ export class ProductService {
       ([_, value]) =>
         value !== undefined &&
         value !== null &&
-        (Array.isArray(value) ? value.length > 0 : value.trim() !== '')
+        (
+          Array.isArray(value)
+            ? value.length > 0
+            : typeof value === 'string' && value.trim() !== ''
+        )
     );
   
     const conditions: string[] = [];
@@ -147,10 +152,12 @@ export class ProductService {
   
     let paramIndex = 1;
   
+    // Generate conditions for filtering JSON fields
     for (const [key, value] of filterEntries) {
       const values = Array.isArray(value) ? value : [value];
   
       const orConditions = values
+        .filter((v): v is string => typeof v === 'string') // Ensure v is string
         .map(() => `
           EXISTS (
             SELECT 1 FROM jsonb_array_elements("filters") AS elem
@@ -160,15 +167,20 @@ export class ProductService {
         `)
         .join(' OR ');
   
-      conditions.push(`(${orConditions})`);
+      if (orConditions) {
+        conditions.push(`(${orConditions})`);
+      }
   
       for (const v of values) {
-        params.push(key, v.trim());
+        if (typeof v === 'string') {
+          params.push(key, v.trim());
+        }
       }
     }
   
     const whereClause = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
   
+    // SQL Query
     const query = `
       SELECT *, 
              (SELECT COUNT(*) 
@@ -188,11 +200,48 @@ export class ProductService {
       (Product & { total: number })[]
     >(query, ...params);
   
+    // Get product IDs for fetching related data
+    const productIds = results.map(p => p.id);
+  
+    // Fetch related specs for the products
+    const specs = await this.prisma.spec.findMany({
+      where: {
+        productId: {
+          in: productIds,
+        },
+      },
+    });
+  
+    // Fetch related services for the products
+    const services = await this.prisma.service.findMany({
+      where: {
+        id: {
+          in: results
+            .map((p) => p.serviceId)
+            .filter((id): id is string => id !== null), // Filter null values explicitly
+        },
+      },
+    });
+    // Map specs and services to product data
+    const specsMap = new Map<string, Spec[]>();
+    for (const spec of specs) {
+      if (spec.productId) {  // Ensure that productId is not null
+        if (!specsMap.has(spec.productId)) {
+          specsMap.set(spec.productId, []);
+        }
+        specsMap.get(spec.productId)?.push(spec);
+      }
+    }
+    const serviceMap = new Map<string, Service>();
+    for (const service of services) {
+      serviceMap.set(service.id, service);
+    }
+  
     const products = results.map((result) => ({
       ...result,
       total: undefined,
-      service: result.serviceId ? { id: result.serviceId } : null,
-      specs: [],
+      service: result.serviceId ? serviceMap.get(result.serviceId) : null,
+      specs: specsMap.get(result.id) || [],
     }));
   
     const total = results.length > 0 ? Number(results[0].total) : 0;
@@ -204,6 +253,7 @@ export class ProductService {
       totalPages: page && limit ? Math.ceil(total / limit) : null,
     };
   }
+  
   
   async findOne(id: string) {
     return this.prisma.product.findUnique({

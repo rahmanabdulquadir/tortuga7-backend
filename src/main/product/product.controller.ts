@@ -37,21 +37,34 @@ export class ProductController {
     @UploadedFiles() files: Express.Multer.File[],
     @Body() dto: CreateProductDto,
   ) {
-    if (dto.filters && typeof dto.filters === 'string') {
-      try {
+    try {
+      // Parse filters
+      if (dto.filters && typeof dto.filters === 'string') {
         const parsed = JSON.parse(dto.filters);
         dto.filters = Array.isArray(parsed) ? parsed : [parsed];
-      } catch (error) {
-        throw new Error(`Invalid JSON format for filters: ${error.message}`);
       }
+  
+      // ✅ Parse keyFeatures
+      if (dto.keyFeatures && typeof dto.keyFeatures === 'string') {
+        const parsed = JSON.parse(dto.keyFeatures);
+        dto.keyFeatures = Array.isArray(parsed) ? parsed : [parsed];
+      }
+  
+      // ✅ Parse keyApplications
+      if (dto.keyApplications && typeof dto.keyApplications === 'string') {
+        const parsed = JSON.parse(dto.keyApplications);
+        dto.keyApplications = Array.isArray(parsed) ? parsed : [parsed];
+      }
+  
+      const uploadPromises = files.map((file) =>
+        this.productService.uploadToCloudinary(file),
+      );
+      const imageUrls = await Promise.all(uploadPromises);
+  
+      return this.productService.create({ ...dto, images: imageUrls });
+    } catch (error) {
+      throw new Error(`Invalid JSON format in body: ${error.message}`);
     }
-  
-    const uploadPromises = files.map((file) =>
-      this.productService.uploadToCloudinary(file),
-    );
-    const imageUrls = await Promise.all(uploadPromises);
-  
-    return this.productService.create({ ...dto, images: imageUrls });
   }
   @Get()
   @ApiQuery({ name: 'page', required: false, type: Number })
