@@ -78,7 +78,7 @@ export class CreateProductDto {
   @Validate(FiltersValidator, { message: 'Invalid filters format' })
   @Type(() => FilterDto)
   @Transform(({ value }) => {
-    console.log('Raw filters input:', value);
+    // console.log('Raw filters input:', value);
     if (value === undefined || value === null) {
       return undefined;
     }
@@ -93,7 +93,7 @@ export class CreateProductDto {
     } else {
       result = Array.isArray(value) ? value : [value];
     }
-    console.log('Transformed filters:', result);
+    // console.log('Transformed filters:', result);
     return result;
   })
   filters?: FilterDto[];
