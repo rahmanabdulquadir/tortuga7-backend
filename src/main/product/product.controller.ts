@@ -85,10 +85,10 @@ export class ProductController {
     return this.productService.findOne(id);
   }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() dto: UpdateProductDto) {
-  //   return this.productService.update(id, dto);
-  // }
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() dto: UpdateProductDto) {
+    return this.productService.update(id, dto);
+  }
 
   @Delete(':id')
   remove(@Param('id') id: string) {

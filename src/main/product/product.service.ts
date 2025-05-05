@@ -209,28 +209,33 @@ export class ProductService {
     });
   }
 
-  // async update(id: string, dto: UpdateProductDto) {
-  //   const existingProduct = await this.prisma.product.findUnique({ where: { id } });
+  async update(id: string, dto: UpdateProductDto) {
+    const existingProduct = await this.prisma.product.findUnique({ where: { id } });
   
-  //   if (!existingProduct) {
-  //     throw new NotFoundException('Product not found');
-  //   }
+    if (!existingProduct) {
+      throw new NotFoundException('Product not found');
+    }
   
-  //   const { serviceId, ...rest } = dto;
+    const { serviceId, filters, ...rest } = dto;
   
-  //   return this.prisma.product.update({
-  //     where: { id },
-  //     data: {
-  //       ...rest,
-  //       ...(serviceId && {
-  //         service: {
-  //           connect: { id: serviceId },
-  //         },
-  //       }),
-  //     },
-  //   });
-  // }
+    // Convert filters to plain JSON if it exists
+    const plainFilters: Prisma.InputJsonValue | undefined = filters
+      ? JSON.parse(JSON.stringify(filters))
+      : undefined;
   
+    return this.prisma.product.update({
+      where: { id },
+      data: {
+        ...rest,
+        ...(serviceId && {
+          service: {
+            connect: { id: serviceId },
+          },
+        }),
+        ...(plainFilters !== undefined && { filters: plainFilters }),
+      },
+    });
+  }
 
   async remove(id: string) {
     const product = await this.prisma.product.findUnique({ where: { id } });

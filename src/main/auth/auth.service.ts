@@ -26,6 +26,10 @@ export class AuthService {
   }
 
   async signup(email: string, password: string, firstName: string, lastName: string, contactNo: string) {
+    if (!password) {
+      throw new BadRequestException('Password is required');
+    }
+  
     const hashedPassword = await bcrypt.hash(password, 10);
     return this.usersService.createUser(email, hashedPassword, firstName, lastName, contactNo);
   }
