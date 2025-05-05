@@ -102,14 +102,13 @@ export class ProductService {
     limit?: number,
     filters?: Record<string, string>,
   ) {
-
     const filterConditions = Object.entries(filters || {})
       .filter(([_, value]) => value !== undefined && value !== null && value !== '')
       .map(([key, value]) => ({
         name: key,
-        value: !isNaN(Number(value)) && value.trim() !== '' ? Number(value) : value,
+        value: value.trim(), // always keep as string
       }));
-
+  
     if (!filterConditions.length) {
       if (!page || !limit) {
         const products = await this.prisma.product.findMany({
@@ -145,9 +144,16 @@ export class ProductService {
       };
     }
   
+    // Use raw filter match + cast value to text in DB to match string
     const jsonConditions = filterConditions
-      .map((_, index) => `"filters" @> $${index + 1}::jsonb`)
-      .join(' AND ');
+  .map((_, index) => `
+    EXISTS (
+      SELECT 1 FROM jsonb_array_elements("filters") AS elem
+      WHERE LOWER(elem->>'name') = LOWER($${index * 2 + 1})
+        AND LOWER(elem->>'value') = LOWER($${index * 2 + 2})
+    )
+  `)
+  .join(' AND ');
   
     const query = `
       SELECT *, 
@@ -160,26 +166,18 @@ export class ProductService {
       ${page && limit ? `LIMIT $${filterConditions.length + 1} OFFSET $${filterConditions.length + 2}` : ''}
     `;
   
+    // Always stringify value (important!)
+    // const params = [
+    //   ...filterConditions.map((condition) =>
+    //     JSON.stringify([{ name: condition.name, value: condition.value.toString() }])
+    //   ),
+    //   ...(page && limit ? [limit, (page - 1) * limit] : []),
+    // ];
 
     const params = [
-      ...filterConditions.map((condition) => {
-        const formattedCondition = [{
-          name: condition.name,
-          value: typeof condition.value === 'number' ? condition.value.toString() : condition.value,
-        }];
-        return JSON.stringify(formattedCondition);
-      }),
+      ...filterConditions.flatMap((condition) => [condition.name, condition.value]),
       ...(page && limit ? [limit, (page - 1) * limit] : []),
     ];
-  
-    // console.log('Raw Query:', query);
-    // console.log('Query Params:', params);
-  
-  
-    const debugFilters = await this.prisma.$queryRawUnsafe<
-      { filters: any }[]
-    >(`SELECT filters FROM "Product" WHERE "filters" IS NOT NULL LIMIT 5`);
-    console.log('Sample filters data:', debugFilters);
   
     const results = await this.prisma.$queryRawUnsafe<
       (Product & { total: number })[]
@@ -187,9 +185,9 @@ export class ProductService {
   
     const products = results.map((result) => ({
       ...result,
-      total: undefined, 
-      service: result.serviceId ? { id: result.serviceId } : null, 
-      specs: [], 
+      total: undefined,
+      service: result.serviceId ? { id: result.serviceId } : null,
+      specs: [],
     }));
   
     const total = results.length > 0 ? Number(results[0].total) : 0;
@@ -201,7 +199,7 @@ export class ProductService {
       totalPages: page && limit ? Math.ceil(total / limit) : null,
     };
   }
-
+  
   async findOne(id: string) {
     return this.prisma.product.findUnique({
       where: { id },
