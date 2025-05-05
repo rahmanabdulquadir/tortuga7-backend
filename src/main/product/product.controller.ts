@@ -61,16 +61,17 @@ export class ProductController {
     return this.productService.create({ ...dto, images: imageUrls });
   }
   @Get()
-  @ApiQuery({ name: 'page', required: false })
-  @ApiQuery({ name: 'limit', required: false })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
   async findAll(@Query() query: QueryProductsDto) {
     const { page, limit, ...filters } = query;
-    const pageNumber = page ? parseInt(page.toString()) : undefined;
-    const pageSize = limit ? parseInt(limit.toString()) : undefined;
-
+  
+    const pageNumber = page ? parseInt(page, 10) : undefined;
+    const pageSize = limit ? parseInt(limit, 10) : undefined;
+  
+    // `filters` will contain arrays like: { cpuType: ['Intel', 'AMD'] }
     return this.productService.findAllPaginatedWithFilters(pageNumber, pageSize, filters);
   }
-
   @Get('/search-by-spec')
   async findBySpecValue(
     @Query('value') value: string,

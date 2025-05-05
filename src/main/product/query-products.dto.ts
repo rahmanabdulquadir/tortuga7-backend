@@ -1,5 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, IsString, IsNumberString } from 'class-validator';
+import { IsOptional, IsString, IsNumberString, IsArray } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 export class QueryProductsDto {
   @ApiPropertyOptional({ type: Number })
@@ -12,28 +13,33 @@ export class QueryProductsDto {
   @IsNumberString()
   limit?: string;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ type: [String] })
   @IsOptional()
-  @IsString()
-  cpuType?: string;
+  @Transform(({ value }) => Array.isArray(value) ? value : [value])
+  @IsString({ each: true })
+  cpuType?: string[];
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ type: [String] })
   @IsOptional()
-  @IsString()
-  generation?: string;
+  @Transform(({ value }) => Array.isArray(value) ? value : [value])
+  @IsString({ each: true })
+  generation?: string[];
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ type: [String] })
   @IsOptional()
-  @IsString()
-  memorySlots?: string;
+  @Transform(({ value }) => Array.isArray(value) ? value : [value])
+  @IsString({ each: true })
+  memorySlots?: string[];
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ type: [String] })
   @IsOptional()
-  @IsString()
-  totalPower?: string;
+  @Transform(({ value }) => Array.isArray(value) ? value : [value])
+  @IsString({ each: true })
+  totalPower?: string[];
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ type: [String] })
   @IsOptional()
-  @IsString()
-  storageType?: string;
+  @Transform(({ value }) => Array.isArray(value) ? value : [value])
+  @IsString({ each: true })
+  storageType?: string[];
 }

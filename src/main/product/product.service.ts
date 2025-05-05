@@ -100,84 +100,56 @@ export class ProductService {
   async findAllPaginatedWithFilters(
     page?: number,
     limit?: number,
-    filters?: Record<string, string>,
+    filters?: Record<string, string | string[]>,
   ) {
-    const filterConditions = Object.entries(filters || {})
-      .filter(([_, value]) => value !== undefined && value !== null && value !== '')
-      .map(([key, value]) => ({
-        name: key,
-        value: value.trim(), // always keep as string
-      }));
+    const filterEntries = Object.entries(filters || {}).filter(
+      ([_, value]) =>
+        value !== undefined &&
+        value !== null &&
+        (Array.isArray(value) ? value.length > 0 : value.trim() !== '')
+    );
   
-    if (!filterConditions.length) {
-      if (!page || !limit) {
-        const products = await this.prisma.product.findMany({
-          orderBy: { createdAt: 'desc' },
-          include: { service: true, specs: true },
-        });
+    const conditions: string[] = [];
+    const params: (string | number)[] = [];
   
-        return {
-          data: products,
-          total: products.length,
-          currentPage: null,
-          totalPages: null,
-        };
+    let paramIndex = 1;
+  
+    for (const [key, value] of filterEntries) {
+      const values = Array.isArray(value) ? value : [value];
+  
+      const orConditions = values
+        .map(() => `
+          EXISTS (
+            SELECT 1 FROM jsonb_array_elements("filters") AS elem
+            WHERE LOWER(elem->>'name') = LOWER($${paramIndex++})
+            AND LOWER(elem->>'value') = LOWER($${paramIndex++})
+          )
+        `)
+        .join(' OR ');
+  
+      conditions.push(`(${orConditions})`);
+  
+      for (const v of values) {
+        params.push(key, v.trim());
       }
-  
-      const skip = (page - 1) * limit;
-  
-      const [products, total] = await Promise.all([
-        this.prisma.product.findMany({
-          skip,
-          take: limit,
-          orderBy: { createdAt: 'desc' },
-          include: { service: true, specs: true },
-        }),
-        this.prisma.product.count(),
-      ]);
-  
-      return {
-        data: products,
-        total,
-        currentPage: page,
-        totalPages: Math.ceil(total / limit),
-      };
     }
   
-    // Use raw filter match + cast value to text in DB to match string
-    const jsonConditions = filterConditions
-  .map((_, index) => `
-    EXISTS (
-      SELECT 1 FROM jsonb_array_elements("filters") AS elem
-      WHERE LOWER(elem->>'name') = LOWER($${index * 2 + 1})
-        AND LOWER(elem->>'value') = LOWER($${index * 2 + 2})
-    )
-  `)
-  .join(' AND ');
+    const whereClause = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
   
     const query = `
       SELECT *, 
              (SELECT COUNT(*) 
               FROM "Product" 
-              WHERE ${jsonConditions}) as total
+              ${whereClause}) as total
       FROM "Product"
-      WHERE ${jsonConditions}
+      ${whereClause}
       ORDER BY "createdAt" DESC
-      ${page && limit ? `LIMIT $${filterConditions.length + 1} OFFSET $${filterConditions.length + 2}` : ''}
+      ${page && limit ? `LIMIT $${paramIndex++} OFFSET $${paramIndex++}` : ''}
     `;
   
-    // Always stringify value (important!)
-    // const params = [
-    //   ...filterConditions.map((condition) =>
-    //     JSON.stringify([{ name: condition.name, value: condition.value.toString() }])
-    //   ),
-    //   ...(page && limit ? [limit, (page - 1) * limit] : []),
-    // ];
-
-    const params = [
-      ...filterConditions.flatMap((condition) => [condition.name, condition.value]),
-      ...(page && limit ? [limit, (page - 1) * limit] : []),
-    ];
+    if (page && limit) {
+      params.push(limit, (page - 1) * limit);
+    }
   
     const results = await this.prisma.$queryRawUnsafe<
       (Product & { total: number })[]
