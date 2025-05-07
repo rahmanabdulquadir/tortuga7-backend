@@ -135,29 +135,27 @@ export class ProductService {
     page?: number,
     limit?: number,
     filters?: Record<string, string | string[]>,
+    searchTerm?: string
   ) {
     const filterEntries = Object.entries(filters || {}).filter(
       ([_, value]) =>
         value !== undefined &&
         value !== null &&
-        (
-          Array.isArray(value)
-            ? value.length > 0
-            : typeof value === 'string' && value.trim() !== ''
-        )
+        (Array.isArray(value)
+          ? value.length > 0
+          : typeof value === 'string' && value.trim() !== '')
     );
   
     const conditions: string[] = [];
     const params: (string | number)[] = [];
-  
     let paramIndex = 1;
   
-    // Generate conditions for filtering JSON fields
+    // Filtering by filters (JSON field logic)
     for (const [key, value] of filterEntries) {
       const values = Array.isArray(value) ? value : [value];
   
       const orConditions = values
-        .filter((v): v is string => typeof v === 'string') // Ensure v is string
+        .filter((v): v is string => typeof v === 'string')
         .map(() => `
           EXISTS (
             SELECT 1 FROM jsonb_array_elements("filters") AS elem
@@ -178,14 +176,24 @@ export class ProductService {
       }
     }
   
+    // Add search condition
+    if (searchTerm && searchTerm.trim() !== '') {
+      const searchConditions = [
+        `"productName" ILIKE $${paramIndex++}`,
+        `"productModel" ILIKE $${paramIndex++}`,
+        `"brandName" ILIKE $${paramIndex++}`,
+        `"description" ILIKE $${paramIndex++}`
+      ];
+      conditions.push(`(${searchConditions.join(' OR ')})`);
+      const likeSearch = `%${searchTerm.trim()}%`;
+      params.push(likeSearch, likeSearch, likeSearch, likeSearch);
+    }
+  
     const whereClause = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
   
-    // SQL Query
     const query = `
-      SELECT *, 
-             (SELECT COUNT(*) 
-              FROM "Product" 
-              ${whereClause}) as total
+      SELECT *,
+        (SELECT COUNT(*) FROM "Product" ${whereClause}) as total
       FROM "Product"
       ${whereClause}
       ORDER BY "createdAt" DESC
@@ -200,10 +208,8 @@ export class ProductService {
       (Product & { total: number })[]
     >(query, ...params);
   
-    // Get product IDs for fetching related data
     const productIds = results.map(p => p.id);
   
-    // Fetch related specs for the products
     const specs = await this.prisma.spec.findMany({
       where: {
         productId: {
@@ -212,26 +218,26 @@ export class ProductService {
       },
     });
   
-    // Fetch related services for the products
     const services = await this.prisma.service.findMany({
       where: {
         id: {
           in: results
             .map((p) => p.serviceId)
-            .filter((id): id is string => id !== null), // Filter null values explicitly
+            .filter((id): id is string => id !== null),
         },
       },
     });
-    // Map specs and services to product data
+  
     const specsMap = new Map<string, Spec[]>();
     for (const spec of specs) {
-      if (spec.productId) {  // Ensure that productId is not null
+      if (spec.productId) {
         if (!specsMap.has(spec.productId)) {
           specsMap.set(spec.productId, []);
         }
         specsMap.get(spec.productId)?.push(spec);
       }
     }
+  
     const serviceMap = new Map<string, Service>();
     for (const service of services) {
       serviceMap.set(service.id, service);

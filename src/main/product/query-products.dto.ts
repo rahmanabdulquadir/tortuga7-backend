@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, IsString, IsNumberString, IsArray } from 'class-validator';
+import { IsOptional, IsString, IsNumberString } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 export class QueryProductsDto {
@@ -12,6 +12,11 @@ export class QueryProductsDto {
   @IsOptional()
   @IsNumberString()
   limit?: string;
+
+  @ApiPropertyOptional({ type: String })
+  @IsOptional()
+  @IsString()
+  search?: string;
 
   @ApiPropertyOptional({ type: [String] })
   @IsOptional()
