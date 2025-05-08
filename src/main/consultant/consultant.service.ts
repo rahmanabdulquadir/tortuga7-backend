@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateConsultantDto } from './create-consultant.dto';
+import { ConsultantStatus } from './update-status.dto';
 
 
 @Injectable()
@@ -24,6 +25,14 @@ export class ConsultantService {
 
   async findOne(id: string) {
     return this.prisma.consultant.findUnique({ where: { id } });
+  }
+
+  async updateStatus(id: string, status: ConsultantStatus) {
+    const consultant = await this.prisma.consultant.update({
+      where: { id },
+      data: { status },
+    });
+    return consultant;
   }
 
   async remove(id: string) {
