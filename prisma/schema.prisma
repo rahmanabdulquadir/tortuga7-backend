@@ -97,14 +97,19 @@ model Consultation {
   userId      String
 }
 
-// model Partner {
-//   id        String    @id @default(uuid())
-//   name      String
-//   logo      String
-//   website   String?
-//   products  Product[] // 👈 One-to-many relation
-//   createdAt DateTime  @default(now())
-// }
+model Consultant {
+  id             String   @id @default(uuid())
+  fullName       String
+  email          String
+  company        String?
+  phone          String
+  preferredDate  DateTime
+  preferredTime  String
+  message        String
+  status      String   @default("pending")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
 
 model GPURental {
   id        String   @id @default(uuid())
@@ -116,33 +121,20 @@ model GPURental {
   userId    String
 }
 
-// model Order {
-//   id          String         @id @default(uuid())
-//   user        User   @relation(fields: [userId], references: [id])
-//   userId      String
+model Content {
+  id             String   @id @default(cuid())
+  heroTitle      String?
+  heroSubtitle   String?
+  aboutTitle     String?
+  aboutText      String?
+  featuresTitle  String?
+  featuresList   String[] // Stores an array of strings (e.g., ["Fast", "Secure", "Easy"])
+  contactTitle   String?
+  contactText    String?
 
-//   orderItems  OrderProduct[]  // 👈 relation to the join table
-
-//   totalAmount Float
-//   status      OrderStatus     @default(PENDING)
-
-//   createdAt   DateTime        @default(now())
-//   updatedAt   DateTime        @updatedAt
-// }
-
-// model OrderProduct {
-//   id        String   @id @default(uuid())
-
-//   order     Order    @relation(fields: [orderId], references: [id])
-//   orderId   String
-
-//   product   Product  @relation(fields: [productId], references: [id])
-//   productId String
-
-//   quantity  Int      @default(1)
-
-//   createdAt DateTime @default(now())
-// }
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
 
 model Blog {
   id         String   @id @default(uuid())

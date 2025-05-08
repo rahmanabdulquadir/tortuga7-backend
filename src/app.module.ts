@@ -14,6 +14,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './main/auth/jwt.strategy';
 import { SpecModule } from './main/spec/spec.module';
 import { ProductModule } from './main/product/product.module';
+import { ConsultantModule } from './main/consultant/consultant.module';
 
 
 @Module({
@@ -26,7 +27,9 @@ import { ProductModule } from './main/product/product.module';
     UsersModule,
     ServiceModule, 
     BlogModule, 
-    ContactModule, 
+    ContactModule,
+    SpecModule,
+    ConsultantModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -39,9 +42,6 @@ import { ProductModule } from './main/product/product.module';
       }),
       inject: [ConfigService],
     }),
-    
-    
-    SpecModule,
     
   ],
   controllers: [AppController,],
