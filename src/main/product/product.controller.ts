@@ -43,57 +43,47 @@ export class ProductController {
         const parsed = JSON.parse(dto.filters);
         dto.filters = Array.isArray(parsed) ? parsed : [parsed];
       }
-  
+
       // Parse keyFeatures
       if (dto.keyFeatures && typeof dto.keyFeatures === 'string') {
         const parsed = JSON.parse(dto.keyFeatures);
         dto.keyFeatures = Array.isArray(parsed) ? parsed : [parsed];
       }
-  
+
       // Parse keyApplications
       if (dto.keyApplications && typeof dto.keyApplications === 'string') {
         const parsed = JSON.parse(dto.keyApplications);
         dto.keyApplications = Array.isArray(parsed) ? parsed : [parsed];
       }
-  
+
       const uploadPromises = files.map((file) =>
         this.productService.uploadToCloudinary(file),
       );
       const imageUrls = await Promise.all(uploadPromises);
-  
+
       return this.productService.create({ ...dto, images: imageUrls });
     } catch (error) {
       throw new Error(`Invalid JSON format in body: ${error.message}`);
     }
   }
-  // @Get()
-  // @ApiQuery({ name: 'page', required: false, type: Number })
-  // @ApiQuery({ name: 'limit', required: false, type: Number })
-  // @ApiQuery({ name: 'search', required: false, type: String })
-  // async findAll(@Query() query: QueryProductsDto) {
-    
-  //   const { page, limit, ...filters } = query;
-  
-  //   const pageNumber = page ? parseInt(page, 10) : undefined;
-  //   const pageSize = limit ? parseInt(limit, 10) : undefined;
-  
-  //   // `filters` will contain arrays like: { cpuType: ['Intel', 'AMD'] }
-  //   return this.productService.findAllPaginatedWithFilters(pageNumber, pageSize, filters);
-  // }
 
-@Get()
-@ApiQuery({ name: 'page', required: false, type: Number })
-@ApiQuery({ name: 'limit', required: false, type: Number })
-@ApiQuery({ name: 'search', required: false, type: String })
-async findAll(@Query() query: QueryProductsDto) {
-  const { page, limit, search, ...filters } = query;
+  @Get()
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'search', required: false, type: String })
+  async findAll(@Query() query: QueryProductsDto) {
+    const { page, limit, search, ...filters } = query;
 
-  const pageNumber = page ? parseInt(page, 10) : undefined;
-  const pageSize = limit ? parseInt(limit, 10) : undefined;
+    const pageNumber = page ? parseInt(page, 10) : undefined;
+    const pageSize = limit ? parseInt(limit, 10) : undefined;
 
-  return this.productService.findAllPaginatedWithFilters(pageNumber, pageSize, filters, search);
-}
-
+    return this.productService.findAllPaginatedWithFilters(
+      pageNumber,
+      pageSize,
+      filters,
+      search,
+    );
+  }
 
   @Get('/search-by-spec')
   async findBySpecValue(
