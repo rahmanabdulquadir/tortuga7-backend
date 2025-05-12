@@ -17,24 +17,24 @@ import { ProductModule } from './main/product/product.module';
 import { ConsultantModule } from './main/consultant/consultant.module';
 import { BookingModule } from './main/booking/booking.module';
 
-
 @Module({
   imports: [
     AuthModule,
-    UsersModule, 
-    PrismaModule, 
-    MailModule, 
-    ProductModule, 
     UsersModule,
-    ServiceModule, 
-    BlogModule, 
+    PrismaModule,
+    MailModule,
+    ProductModule,
+    UsersModule,
+    ServiceModule,
+    BlogModule,
     ContactModule,
     SpecModule,
     ConsultantModule,
+    BookingModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    
+
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (config: ConfigService) => ({
@@ -43,13 +43,8 @@ import { BookingModule } from './main/booking/booking.module';
       }),
       inject: [ConfigService],
     }),
-    
-    BookingModule,
-    
   ],
-  controllers: [AppController,],
-  providers: [AppService, SeederService, JwtStrategy,],
+  controllers: [AppController],
+  providers: [AppService, SeederService, JwtStrategy],
 })
 export class AppModule {}
-
-
