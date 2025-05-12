@@ -2,7 +2,6 @@
 import { IsEnum } from 'class-validator';
 
 export enum ConsultantStatus {
-  NEW = 'new',
   PENDING = 'pending',
   APPROVED = 'approved',
   REJECTED = 'rejected',

@@ -15,6 +15,7 @@ import { JwtStrategy } from './main/auth/jwt.strategy';
 import { SpecModule } from './main/spec/spec.module';
 import { ProductModule } from './main/product/product.module';
 import { ConsultantModule } from './main/consultant/consultant.module';
+import { BookingModule } from './main/booking/booking.module';
 
 
 @Module({
@@ -42,6 +43,8 @@ import { ConsultantModule } from './main/consultant/consultant.module';
       }),
       inject: [ConfigService],
     }),
+    
+    BookingModule,
     
   ],
   controllers: [AppController,],
