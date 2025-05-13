@@ -21,21 +21,39 @@ class FiltersValidator implements ValidatorConstraintInterface {
       return true; // Allow empty or undefined if optional
     }
     return filters.every((filter, index) => {
-      if (!filter || typeof filter !== 'object' || !filter.name || !filter.value) {
-        throw new Error(`Filter at index ${index} must have non-empty name and value (got: ${JSON.stringify(filter)})`);
+      if (
+        !filter ||
+        typeof filter !== 'object' ||
+        !filter.name ||
+        !filter.value
+      ) {
+        throw new Error(
+          `Filter at index ${index} must have non-empty name and value (got: ${JSON.stringify(filter)})`,
+        );
       }
-      return typeof filter.name === 'string' && filter.name.trim() !== '' && typeof filter.value === 'string' && filter.value.trim() !== '';
+      return (
+        typeof filter.name === 'string' &&
+        filter.name.trim() !== '' &&
+        typeof filter.value === 'string' &&
+        filter.value.trim() !== ''
+      );
     });
   }
 }
 
 class FilterDto {
-  @ApiProperty({ description: 'Filter name (e.g., cpuType)', example: 'cpuType' })
+  @ApiProperty({
+    description: 'Filter name (e.g., cpuType)',
+    example: 'cpuType',
+  })
   @IsString()
   @IsNotEmpty({ message: 'Filter name must not be empty' })
   name: string;
 
-  @ApiProperty({ description: 'Filter value (e.g., intel® Xeon® Gold 6338)', example: 'intel® Xeon® Gold 6338' })
+  @ApiProperty({
+    description: 'Filter value (e.g., intel® Xeon® Gold 6338)',
+    example: 'intel® Xeon® Gold 6338',
+  })
   @IsString()
   @IsNotEmpty({ message: 'Filter value must not be empty' })
   value: string;
@@ -69,7 +87,8 @@ export class CreateProductDto {
 
   @ApiProperty({
     type: [FilterDto],
-    description: 'List of filters (e.g., [{ name: "cpuType", value: "intel® Xeon® Gold 6338" }] or { name: "cpuType", value: "intel® Xeon® Gold 6338" })',
+    description:
+      'List of filters (e.g., [{ name: "cpuType", value: "intel® Xeon® Gold 6338" }] or { name: "cpuType", value: "intel® Xeon® Gold 6338" })',
     required: false,
     example: [{ name: 'cpuType', value: 'intel® Xeon® Gold 6338' }],
   })
@@ -88,7 +107,9 @@ export class CreateProductDto {
         const parsed = JSON.parse(value);
         result = Array.isArray(parsed) ? parsed : [parsed];
       } catch (error) {
-        throw new Error(`Invalid JSON format for filters: ${error.message} (input: "${value}")`);
+        throw new Error(
+          `Invalid JSON format for filters: ${error.message} (input: "${value}")`,
+        );
       }
     } else {
       result = Array.isArray(value) ? value : [value];
@@ -114,6 +135,24 @@ export class CreateProductDto {
   )
   keyFeatures: string[];
 
+  // @ApiProperty({
+  //   type: [String],
+  //   description: 'List of key applications',
+  //   example: ['gaming', 'work'],
+  // })
+  // @IsArray()
+  // @IsString({ each: true })
+  // keyApplications: string[];
+
+  // @ApiProperty({
+  //   type: [String],
+  //   description: 'List of key features',
+  //   example: ['fast processor', 'long battery'],
+  // })
+  // @IsArray()
+  // @IsString({ each: true })
+  // keyFeatures: string[];
+
   @ApiProperty({
     type: 'array',
     items: {
@@ -137,7 +176,11 @@ export class CreateProductDto {
   @Type(() => Boolean)
   available: boolean;
 
-  @ApiProperty({ description: 'UUID of the associated service', required: false, example: '053ef36a-898a-435e-a185-4f5691024e44' })
+  @ApiProperty({
+    description: 'UUID of the associated service',
+    required: false,
+    example: '053ef36a-898a-435e-a185-4f5691024e44',
+  })
   @IsOptional()
   @IsUUID('4', { message: 'serviceId must be a valid UUID' })
   serviceId?: string;
